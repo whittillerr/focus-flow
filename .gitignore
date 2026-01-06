@@ -1,0 +1,13 @@
+# Test files
+test-data.js
+
+# Plan files
+.claude/
+
+# System files
+.DS_Store
+*.log
+
+# Credentials
+.git-credentials
+.gitconfig
