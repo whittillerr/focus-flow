@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Focus Flow - Cold Call Tracker</title>
     <style>
+        /* ===== RESET & BASE ===== */
         * {
             margin: 0;
             padding: 0;
@@ -12,22 +13,24 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 20px;
+            color: #1f2937;
         }
 
+        /* ===== CONTAINER ===== */
         .container {
             max-width: 1400px;
             margin: 0 auto;
             background: white;
             border-radius: 20px;
-            padding: 0;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
             overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
         }
 
+        /* ===== HEADER ===== */
         .header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
@@ -36,32 +39,33 @@
         }
 
         .header h1 {
-            margin: 0;
             font-size: 2em;
+            font-weight: 700;
         }
 
+        /* ===== TABS ===== */
         .tabs {
             display: flex;
-            background: #f5f5f5;
+            background: #f8f9fa;
             border-bottom: 2px solid #e0e0e0;
         }
 
         .tab-btn {
             flex: 1;
-            padding: 15px 20px;
+            padding: 16px 20px;
             background: none;
             border: none;
             cursor: pointer;
             font-size: 1em;
-            font-weight: 500;
-            color: #666;
-            transition: all 0.3s ease;
+            font-weight: 600;
+            color: #6b7280;
+            transition: all 0.2s ease;
             border-bottom: 3px solid transparent;
         }
 
         .tab-btn:hover {
             background: #ebebeb;
-            color: #333;
+            color: #374151;
         }
 
         .tab-btn.active {
@@ -70,6 +74,7 @@
             border-bottom-color: #667eea;
         }
 
+        /* ===== TAB CONTENT ===== */
         .tab-content {
             display: none;
             padding: 40px;
@@ -85,11 +90,12 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
+        /* ===== STATS CARDS ===== */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
-            gap: 15px;
-            margin-bottom: 30px;
+            gap: 16px;
+            margin-bottom: 32px;
         }
 
         @media (max-width: 1200px) {
@@ -107,21 +113,22 @@
         .stat-card {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 25px 20px;
+            padding: 24px;
             border-radius: 12px;
             text-align: center;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
         }
 
         .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
         }
 
-        .stat-card.outcome-vm { background: linear-gradient(135deg, #94a3b8 0%, #64748b 100%); }
-        .stat-card.outcome-interested { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
-        .stat-card.outcome-not-interested { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); }
-        .stat-card.outcome-callback { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
+        .stat-card.voicemail { background: #6b7280; }
+        .stat-card.interested { background: #10b981; }
+        .stat-card.not-interested { background: #ef4444; }
+        .stat-card.callback { background: #f59e0b; }
 
         .stat-card h3 {
             font-size: 0.85em;
@@ -138,637 +145,660 @@
             line-height: 1;
         }
 
-        .form-section {
-            background: #f8f9fa;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            padding: 25px;
-            margin-bottom: 30px;
-        }
-
-        .form-section h2 {
-            color: #667eea;
-            margin-bottom: 20px;
-            font-size: 1.3em;
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-bottom: 15px;
-        }
-
-        .form-row.single {
-            grid-template-columns: 1fr;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .form-group label {
-            font-size: 0.9em;
-            font-weight: 500;
-            margin-bottom: 5px;
-            color: #555;
-        }
-
-        .form-group input,
-        .form-group textarea {
-            padding: 10px 15px;
-            border: 2px solid #ddd;
-            border-radius: 5px;
-            font-size: 1em;
-            font-family: inherit;
-            transition: border-color 0.3s ease;
-        }
-
-        .form-group input:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-
-        .outcome-buttons {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-
-        .outcome-btn {
-            padding: 18px 20px;
-            border: 3px solid #ddd;
+        /* ===== CHART CONTAINER ===== */
+        .chart-section {
             background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .chart-header h2 {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: #1f2937;
+        }
+
+        .period-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .period-btn {
+            padding: 8px 16px;
+            border: 2px solid #667eea;
+            background: white;
+            color: #667eea;
             border-radius: 8px;
             cursor: pointer;
-            font-size: 1em;
+            font-size: 0.9em;
             font-weight: 600;
             transition: all 0.2s ease;
         }
 
-        .outcome-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+        .period-btn:hover {
+            background: #e0e7ff;
         }
 
-        .outcome-btn.selected {
-            border-width: 3px;
-            transform: scale(1.05);
-        }
-
-        .outcome-btn.vm { border-color: #94a3b8; }
-        .outcome-btn.vm:hover { border-color: #64748b; }
-        .outcome-btn.vm.selected { background: #94a3b8; color: white; box-shadow: 0 6px 20px rgba(148, 163, 184, 0.4); }
-
-        .outcome-btn.interested { border-color: #10b981; }
-        .outcome-btn.interested:hover { border-color: #059669; }
-        .outcome-btn.interested.selected { background: #10b981; color: white; box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4); }
-
-        .outcome-btn.not-interested { border-color: #ef4444; }
-        .outcome-btn.not-interested:hover { border-color: #dc2626; }
-        .outcome-btn.not-interested.selected { background: #ef4444; color: white; box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4); }
-
-        .outcome-btn.callback { border-color: #f59e0b; }
-        .outcome-btn.callback:hover { border-color: #d97706; }
-        .outcome-btn.callback.selected { background: #f59e0b; color: white; box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4); }
-
-        .checkbox-group {
-            display: flex;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-
-        .checkbox-group input {
-            width: 20px;
-            height: 20px;
-            margin-right: 10px;
-            cursor: pointer;
-        }
-
-        .checkbox-group label {
-            font-size: 1em;
-            cursor: pointer;
-        }
-
-        .expand-link {
-            color: #667eea;
-            cursor: pointer;
-            font-size: 0.9em;
-            text-decoration: none;
-            margin-right: 15px;
-        }
-
-        .expand-link:hover {
-            text-decoration: underline;
-        }
-
-        .hidden {
-            display: none !important;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        .period-btn.active {
+            background: #667eea;
             color: white;
-            border: none;
-            padding: 16px 32px;
-            border-radius: 8px;
-            font-size: 1.05em;
-            font-weight: 700;
-            cursor: pointer;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .chart-canvas {
             width: 100%;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            height: 300px;
+            position: relative;
         }
 
-        .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
-        }
-
-        .btn-primary:active {
-            transform: translateY(-1px);
-        }
-
-        .stage-buttons {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-        .stage-btn {
-            padding: 12px;
-            border: 2px solid #ddd;
-            background: white;
-            border-radius: 5px;
-            cursor: pointer;
+        /* ===== TIME INSIGHTS ===== */
+        .time-insights {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 32px;
+            border-left: 4px solid #667eea;
             font-size: 0.95em;
-            font-weight: 500;
-            transition: all 0.3s ease;
+            color: #374151;
         }
 
-        .stage-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-
-        .stage-btn.warm { border-color: #f59e0b; }
-        .stage-btn.warm:hover { background: #f59e0b; color: white; }
-
-        .stage-btn.demo { border-color: #3b82f6; }
-        .stage-btn.demo:hover { background: #3b82f6; color: white; }
-
-        .stage-btn.closed { border-color: #10b981; }
-        .stage-btn.closed:hover { background: #10b981; color: white; }
-
-        .stage-btn.dead { border-color: #ef4444; }
-        .stage-btn.dead:hover { background: #ef4444; color: white; }
-
+        /* ===== RECENT CALLS ===== */
         .recent-calls {
-            margin-top: 30px;
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
         }
 
         .recent-calls h3 {
-            color: #333;
-            margin-bottom: 15px;
+            font-size: 1.2em;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #1f2937;
         }
 
         .call-item {
-            background: white;
-            border: 1px solid #e0e0e0;
-            border-radius: 5px;
-            padding: 15px;
-            margin-bottom: 10px;
-        }
-
-        .call-item-header {
+            padding: 12px;
+            border-bottom: 1px solid #e0e0e0;
             display: flex;
             justify-content: space-between;
-            margin-bottom: 5px;
+            align-items: center;
+            transition: background 0.2s ease;
         }
 
-        .call-item-phone {
+        .call-item:last-child {
+            border-bottom: none;
+        }
+
+        .call-item:hover {
+            background: #f8f9fa;
+        }
+
+        .call-item-left {
+            flex: 1;
+        }
+
+        .call-item-business {
             font-weight: 600;
-            color: #667eea;
-        }
-
-        .call-item-time {
-            color: #666;
-            font-size: 0.9em;
+            color: #1f2937;
+            margin-bottom: 4px;
         }
 
         .call-item-details {
-            color: #666;
             font-size: 0.9em;
+            color: #6b7280;
         }
 
+        .call-item-time {
+            font-size: 0.85em;
+            color: #9ca3af;
+        }
+
+        /* ===== CALL LIST TABLE ===== */
+        .call-list-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .call-list-header h2 {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: #1f2937;
+        }
+
+        .call-list-controls {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .search-input {
+            padding: 10px 16px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            width: 300px;
+            transition: border-color 0.2s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .filter-select {
+            padding: 10px 16px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            cursor: pointer;
+            background: white;
+            transition: border-color 0.2s ease;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .contacts-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .contacts-table thead {
+            background: #f8f9fa;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .contacts-table th {
+            padding: 16px;
+            text-align: left;
+            font-size: 0.75em;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #6b7280;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .contacts-table td {
+            padding: 16px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .contacts-table tbody tr {
+            transition: all 0.2s ease;
+        }
+
+        .contacts-table tbody tr:hover {
+            background: #f3f4f6;
+            transform: translateY(-2px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .contacts-table tbody tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        .contacts-table tbody tr:nth-child(even):hover {
+            background: #f3f4f6;
+        }
+
+        .checkbox-cell {
+            width: 40px;
+            text-align: center;
+        }
+
+        .checkbox-cell input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .phone-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .phone-link:hover {
+            text-decoration: underline;
+        }
+
+        .business-name {
+            font-weight: 500;
+            color: #1f2937;
+            max-width: 250px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* ===== BADGES ===== */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+
+        .badge.vm-callback {
+            background: #fef2f2;
+            color: #ef4444;
+            border: 1px solid #fecaca;
+        }
+
+        .badge.scheduled-callback {
+            background: #fffbeb;
+            color: #f59e0b;
+            border: 1px solid #fed7aa;
+        }
+
+        .badge.cold {
+            background: #f9fafb;
+            color: #6b7280;
+            border: 1px solid #e5e7eb;
+        }
+
+        .badge.warm {
+            background: #fffbeb;
+            color: #f59e0b;
+            border: 1px solid #fed7aa;
+        }
+
+        .badge.deprioritized {
+            background: #f9fafb;
+            color: #9ca3af;
+            border: 1px solid #e5e7eb;
+            opacity: 0.6;
+        }
+
+        /* ===== BUTTONS ===== */
+        .btn-primary {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-secondary:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .show-more-btn {
+            width: 100%;
+            margin-top: 16px;
+            padding: 12px;
+            background: #f8f9fa;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            color: #667eea;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .show-more-btn:hover {
+            background: #e0e7ff;
+            border-color: #667eea;
+        }
+
+        /* ===== QUICK-LOG MODAL ===== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s ease-out;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.16);
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-header {
+            background: #f8f9fa;
+            padding: 24px;
+            border-bottom: 1px solid #e0e0e0;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #6b7280;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            transition: background 0.2s ease;
+        }
+
+        .modal-close:hover {
+            background: #e5e7eb;
+        }
+
+        .modal-business {
+            font-size: 1.25em;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 8px;
+        }
+
+        .modal-phone {
+            font-size: 1em;
+            color: #6b7280;
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .outcome-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .outcome-btn {
+            height: 80px;
+            border-radius: 12px;
+            border: 2px solid;
+            background: white;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .outcome-btn .emoji {
+            font-size: 32px;
+        }
+
+        .outcome-btn.voicemail {
+            border-color: #3b82f6;
+            color: #3b82f6;
+        }
+
+        .outcome-btn.voicemail:hover {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .outcome-btn.interested {
+            border-color: #10b981;
+            color: #10b981;
+        }
+
+        .outcome-btn.interested:hover {
+            background: #10b981;
+            color: white;
+        }
+
+        .outcome-btn.demo_booked {
+            border-color: #8b5cf6;
+            color: #8b5cf6;
+        }
+
+        .outcome-btn.demo_booked:hover {
+            background: #8b5cf6;
+            color: white;
+        }
+
+        .outcome-btn.not_interested {
+            border-color: #ef4444;
+            color: #ef4444;
+        }
+
+        .outcome-btn.not_interested:hover {
+            background: #ef4444;
+            color: white;
+        }
+
+        .outcome-btn.callback {
+            grid-column: 1 / -1;
+            border-color: #f59e0b;
+            color: #f59e0b;
+        }
+
+        .outcome-btn.callback:hover {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .callback-note-container {
+            display: none;
+            margin-bottom: 20px;
+            animation: slideDown 0.2s ease;
+        }
+
+        .callback-note-container.active {
+            display: block;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .callback-note-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            font-family: inherit;
+            transition: border-color 0.2s ease;
+        }
+
+        .callback-note-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .text-sent-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .text-sent-checkbox input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .text-sent-checkbox label {
+            font-size: 1em;
+            cursor: pointer;
+            color: #374151;
+        }
+
+        /* ===== IMPORT TAB ===== */
+        .upload-zone {
+            border: 2px dashed #667eea;
+            border-radius: 12px;
+            background: #f8f9fa;
+            padding: 60px 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: 24px;
+        }
+
+        .upload-zone:hover {
+            background: #e0e7ff;
+            border-color: #5568d3;
+        }
+
+        .upload-zone .icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .upload-zone .text {
+            font-size: 1.1em;
+            color: #6b7280;
+        }
+
+        .import-summary {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 24px;
+        }
+
+        .import-summary h3 {
+            font-size: 1.2em;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #1f2937;
+        }
+
+        /* ===== LOGGED TAB ===== */
+        .filters-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        @media (max-width: 1024px) {
+            .filters-row {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        /* ===== TOAST NOTIFICATIONS ===== */
         .toast {
             position: fixed;
             top: 20px;
             right: 20px;
             background: #10b981;
             color: white;
-            padding: 15px 25px;
-            border-radius: 5px;
+            padding: 16px 24px;
+            border-radius: 8px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-            animation: slideIn 0.3s ease, slideOut 0.3s ease 2.7s;
-            z-index: 1000;
+            animation: slideInRight 0.3s ease, slideOutRight 0.3s ease 2.7s;
+            z-index: 2000;
+            font-weight: 500;
         }
 
-        @keyframes slideIn {
+        .toast.error {
+            background: #ef4444;
+        }
+
+        @keyframes slideInRight {
             from { transform: translateX(400px); opacity: 0; }
             to { transform: translateX(0); opacity: 1; }
         }
 
-        @keyframes slideOut {
+        @keyframes slideOutRight {
             from { transform: translateX(0); opacity: 1; }
             to { transform: translateX(400px); opacity: 0; }
         }
 
-        @keyframes numberPulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-
-        .stat-card .number.updated {
-            animation: numberPulse 0.4s ease;
+        /* ===== UTILITY CLASSES ===== */
+        .hidden {
+            display: none !important;
         }
 
         .empty-state {
             text-align: center;
-            padding: 40px;
-            color: #999;
+            padding: 60px 40px;
+            color: #9ca3af;
         }
 
-        .empty-state p {
+        .empty-state .icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .empty-state .text {
             font-size: 1.1em;
-            margin-top: 10px;
-        }
-
-        .form-control {
-            padding: 10px 15px;
-            border: 2px solid #ddd;
-            border-radius: 5px;
-            font-size: 1em;
-            font-family: inherit;
-            transition: border-color 0.3s ease;
-            width: 100%;
-        }
-
-        .form-control:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-
-        .contact-item {
-            background: white;
-            border: 1px solid #e0e0e0;
-            border-radius: 5px;
-            padding: 20px;
-            margin-bottom: 15px;
-            transition: box-shadow 0.3s ease;
-        }
-
-        .contact-item:hover {
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-
-        .contact-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-
-        .contact-info {
-            flex: 1;
-        }
-
-        .contact-phone {
-            font-weight: 600;
-            font-size: 1.1em;
-            color: #667eea;
-            margin-bottom: 5px;
-        }
-
-        .contact-business {
-            font-size: 1em;
-            color: #333;
-            margin-bottom: 3px;
-        }
-
-        .contact-name {
-            font-size: 0.9em;
-            color: #666;
-        }
-
-        .contact-meta {
-            font-size: 0.85em;
-            color: #999;
-            margin-top: 8px;
-        }
-
-        .stage-badge {
-            display: inline-block;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 0.85em;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-
-        .stage-badge.cold {
-            background: #e0e7ff;
-            color: #4338ca;
-        }
-
-        .stage-badge.warm {
-            background: #fef3c7;
-            color: #d97706;
-        }
-
-        .stage-badge.demo {
-            background: #dbeafe;
-            color: #1e40af;
-        }
-
-        .stage-badge.closed {
-            background: #d1fae5;
-            color: #059669;
-        }
-
-        .stage-badge.dead {
-            background: #fee2e2;
-            color: #dc2626;
-        }
-
-        .contact-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        .btn-small {
-            padding: 8px 16px;
-            border: 2px solid #667eea;
-            background: white;
-            color: #667eea;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 0.9em;
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
-
-        .btn-small:hover {
-            background: #667eea;
-            color: white;
-        }
-
-        .editable {
-            cursor: pointer;
-            padding: 2px 5px;
-            border-radius: 3px;
-            transition: background 0.3s ease;
-        }
-
-        .editable:hover {
-            background: #f0f0f0;
-        }
-
-        .editing {
-            background: #f0f0f0;
-        }
-
-        .edit-input {
-            padding: 5px 10px;
-            border: 2px solid #667eea;
-            border-radius: 3px;
-            font-size: inherit;
-            font-family: inherit;
-            width: 100%;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        table th,
-        table td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #e0e0e0;
-        }
-
-        table th {
-            background: #f5f5f5;
-            font-weight: 600;
-            color: #333;
-        }
-
-        table tr:hover {
-            background: #f9f9f9;
-        }
-
-        .chart-toggle-btn {
-            padding: 8px 16px;
-            border: 2px solid #667eea;
-            background: white;
-            color: #667eea;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 0.9em;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            margin-left: 10px;
-        }
-
-        .chart-toggle-btn:hover {
-            background: #e0e7ff;
-        }
-
-        .chart-toggle-btn.active {
-            background: #667eea;
-            color: white;
-        }
-
-        .charts-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-            gap: 20px;
-        }
-
-        .chart-container {
-            background: white;
-            padding: 25px;
-            border-radius: 12px;
-            border: 2px solid #e0e0e0;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            transition: box-shadow 0.3s ease;
-        }
-
-        .chart-container:hover {
-            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
-        }
-
-        .chart-container h3 {
-            margin-bottom: 20px;
-            color: #333;
-            font-size: 1.2em;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .bar-chart {
-            display: flex;
-            align-items: flex-end;
-            height: 250px;
-            gap: 2px;
-            padding: 10px 0 40px 0;
-        }
-
-        .bar-chart-item {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-end;
-        }
-
-        .bar {
-            width: 100%;
-            background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
-            border-radius: 4px 4px 0 0;
-            transition: all 0.3s ease;
-            position: relative;
-            box-shadow: 0 -2px 8px rgba(102, 126, 234, 0.3);
-        }
-
-        .bar:hover {
-            background: linear-gradient(180deg, #7c8ff5 0%, #8a5cb8 100%);
-            transform: translateY(-5px);
-            box-shadow: 0 -4px 12px rgba(102, 126, 234, 0.5);
-        }
-
-        .bar-label {
-            margin-top: 10px;
-            font-size: 0.7em;
-            color: #666;
-            text-align: center;
-            font-weight: 600;
-            white-space: nowrap;
-        }
-
-        .bar-value {
-            position: absolute;
-            top: -28px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 0.9em;
-            font-weight: 700;
-            color: #667eea;
-            background: white;
-            padding: 2px 6px;
-            border-radius: 4px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .funnel-chart {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            padding: 10px 0;
-        }
-
-        .funnel-item {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .funnel-bar {
-            height: 40px;
-            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
-            border-radius: 5px;
-            display: flex;
-            align-items: center;
-            padding: 0 15px;
-            color: white;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-
-        .funnel-bar:hover {
-            transform: scale(1.02);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
-        }
-
-        .funnel-label {
-            min-width: 80px;
-            font-size: 0.9em;
-            color: #666;
-            font-weight: 500;
-        }
-
-        .funnel-percentage {
-            margin-left: 15px;
-            font-size: 0.85em;
-            color: #999;
-        }
-
-        .time-pattern-item {
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 5px;
-            margin-bottom: 10px;
-            border-left: 4px solid #667eea;
-        }
-
-        .time-pattern-header {
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 5px;
-        }
-
-        .time-pattern-details {
-            font-size: 0.9em;
-            color: #666;
-        }
-
-        input[type="file"] {
-            padding: 12px;
-            border: 2px dashed #667eea;
-            border-radius: 8px;
-            background: #f8f9fa;
-            cursor: pointer;
-            font-size: 1em;
-            width: 100%;
-            transition: all 0.3s ease;
-        }
-
-        input[type="file"]:hover {
-            border-color: #764ba2;
-            background: #e0e7ff;
-        }
-
-        h2 {
-            color: #333;
-            margin-bottom: 20px;
-            font-size: 1.5em;
-            font-weight: 700;
-        }
-
-        h3 {
-            color: #667eea;
-            font-size: 1.2em;
-            font-weight: 600;
         }
     </style>
 </head>
@@ -781,134 +811,57 @@
         <div class="tabs">
             <button class="tab-btn active" data-tab="dashboard">Dashboard</button>
             <button class="tab-btn" data-tab="call-list">Call List</button>
+            <button class="tab-btn" data-tab="logged">Logged</button>
             <button class="tab-btn" data-tab="import">Import</button>
-            <button class="tab-btn" data-tab="history">History</button>
         </div>
 
         <!-- DASHBOARD TAB -->
         <div class="tab-content active" id="dashboard-tab">
-            <!-- Charts Section -->
-            <div class="form-section" style="margin-bottom: 30px;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                    <h2 style="margin: 0;">Analytics</h2>
-                    <div>
-                        <button class="chart-toggle-btn active" data-period="7">7 Days</button>
-                        <button class="chart-toggle-btn" data-period="30">30 Days</button>
-                        <button class="chart-toggle-btn" data-period="all">All Time</button>
-                    </div>
-                </div>
-
-                <div class="charts-grid">
-                    <div class="chart-container">
-                        <h3>Calls Per Day</h3>
-                        <div id="calls-per-day-chart"></div>
-                    </div>
-                    <div class="chart-container">
-                        <h3>Conversion Funnel</h3>
-                        <div id="conversion-funnel-chart"></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Time Patterns Section -->
-            <div class="form-section" style="margin-bottom: 30px;">
-                <h2>Today's Call Patterns</h2>
-                <div id="time-patterns"></div>
-            </div>
-
-            <div class="stats-grid" id="stats-grid">
+            <div class="stats-grid">
                 <div class="stat-card">
                     <h3>Total Calls Today</h3>
                     <div class="number" id="stat-total">0</div>
                 </div>
-                <div class="stat-card outcome-vm">
+                <div class="stat-card voicemail">
                     <h3>Voicemails</h3>
                     <div class="number" id="stat-vm">0</div>
                 </div>
-                <div class="stat-card outcome-interested">
+                <div class="stat-card interested">
                     <h3>Interested</h3>
                     <div class="number" id="stat-interested">0</div>
                 </div>
-                <div class="stat-card outcome-not-interested">
+                <div class="stat-card not-interested">
                     <h3>Not Interested</h3>
                     <div class="number" id="stat-not-interested">0</div>
                 </div>
-                <div class="stat-card outcome-callback">
+                <div class="stat-card callback">
                     <h3>Callbacks</h3>
                     <div class="number" id="stat-callback">0</div>
                 </div>
             </div>
 
-            <div class="form-section">
-                <h2>Log a Call</h2>
-                <form id="call-log-form">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="phone-input">Phone Number *</label>
-                            <input type="tel" id="phone-input" placeholder="555-123-4567" required autocomplete="off">
-                        </div>
-                        <div class="form-group">
-                            <label for="business-input">Business Name</label>
-                            <input type="text" id="business-input" placeholder="Company name" autocomplete="off">
-                        </div>
+            <div class="chart-section">
+                <div class="chart-header">
+                    <h2>Analytics</h2>
+                    <div class="period-buttons">
+                        <button class="period-btn active" data-days="7">7 Days</button>
+                        <button class="period-btn" data-days="30">30 Days</button>
+                        <button class="period-btn" data-days="all">All Time</button>
                     </div>
-
-                    <div class="form-row single">
-                        <div class="form-group">
-                            <label for="name-input">Contact Name (Optional)</label>
-                            <input type="text" id="name-input" placeholder="John Smith" autocomplete="off">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Call Outcome * <small style="color: #999; font-weight: normal;">(or press 1-4)</small></label>
-                        <div class="outcome-buttons">
-                            <button type="button" class="outcome-btn vm" data-outcome="voicemail">1. Voicemail</button>
-                            <button type="button" class="outcome-btn interested" data-outcome="interested">2. Interested</button>
-                            <button type="button" class="outcome-btn not-interested" data-outcome="not_interested">3. Not Interested</button>
-                            <button type="button" class="outcome-btn callback" data-outcome="callback">4. Callback</button>
-                        </div>
-                    </div>
-
-                    <div class="checkbox-group">
-                        <input type="checkbox" id="text-sent-checkbox">
-                        <label for="text-sent-checkbox">Text sent?</label>
-                        <a href="#" class="expand-link" id="toggle-notes">+ Add notes</a>
-                        <a href="#" class="expand-link" id="edit-time">Edit time</a>
-                    </div>
-
-                    <div class="form-row single hidden" id="notes-container">
-                        <div class="form-group">
-                            <label for="notes-input">Notes</label>
-                            <textarea id="notes-input" rows="3" placeholder="Additional notes about this call..."></textarea>
-                        </div>
-                    </div>
-
-                    <div class="form-row single hidden" id="time-container">
-                        <div class="form-group">
-                            <label for="call-time-input">Call Time</label>
-                            <input type="datetime-local" id="call-time-input">
-                        </div>
-                    </div>
-
-                    <input type="hidden" id="selected-outcome">
-
-                    <button type="submit" class="btn-primary">Save Call</button>
-                </form>
-
-                <div class="stage-buttons hidden" id="stage-buttons">
-                    <button class="stage-btn warm" data-stage="warm">Mark as Warm Lead</button>
-                    <button class="stage-btn demo" data-stage="demo">Book Demo</button>
-                    <button class="stage-btn closed" data-stage="closed">Mark as Closed</button>
-                    <button class="stage-btn dead" data-stage="dead">Mark as Dead</button>
                 </div>
+                <div class="chart-canvas" id="analytics-chart"></div>
+            </div>
+
+            <div class="time-insights" id="time-insights">
+                Loading insights...
             </div>
 
             <div class="recent-calls">
                 <h3>Recent Calls</h3>
                 <div id="recent-calls-list">
                     <div class="empty-state">
-                        <p>No calls logged yet today. Start calling!</p>
+                        <div class="icon">📞</div>
+                        <div class="text">No calls logged yet today. Start calling!</div>
                     </div>
                 </div>
             </div>
@@ -916,1063 +869,882 @@
 
         <!-- CALL LIST TAB -->
         <div class="tab-content" id="call-list-tab">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h2 style="margin: 0;">Call List</h2>
-                <div>
-                    <select id="stage-filter" style="padding: 10px; border: 2px solid #ddd; border-radius: 5px; font-size: 1em;">
-                        <option value="active">Show Active Only</option>
-                        <option value="cold">Cold Leads Only</option>
-                        <option value="warm">Warm Leads Only</option>
-                        <option value="demo">Demo Booked Only</option>
-                        <option value="closed">Closed Only</option>
-                        <option value="all">Show All (inc. Dead)</option>
+            <div class="call-list-header">
+                <h2>Call List</h2>
+                <div class="call-list-controls">
+                    <input type="text" id="call-list-search" class="search-input" placeholder="Search phone, business...">
+                    <select id="call-list-filter" class="filter-select">
+                        <option value="all">All Active</option>
+                        <option value="priority">Priority Only</option>
+                        <option value="cold">Cold Only</option>
+                        <option value="stage:cold">Stage: Cold</option>
+                        <option value="stage:warm">Stage: Warm</option>
                     </select>
                 </div>
             </div>
 
-            <div id="call-list-container"></div>
+            <table class="contacts-table" id="contacts-table">
+                <thead>
+                    <tr>
+                        <th class="checkbox-cell" style="width: 50px;">☐</th>
+                        <th style="width: 140px;">Phone</th>
+                        <th style="width: 200px;">Business</th>
+                        <th style="width: 100px;">Website</th>
+                        <th style="width: 140px;">Status</th>
+                        <th style="width: 120px;">Last Called</th>
+                        <th style="width: 150px;">Notes</th>
+                    </tr>
+                </thead>
+                <tbody id="contacts-tbody">
+                    <tr>
+                        <td colspan="7">
+                            <div class="empty-state">
+                                <div class="icon">📋</div>
+                                <div class="text">No contacts to call. Import CSV to get started.</div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <button class="show-more-btn hidden" id="show-more-btn">Show More</button>
+        </div>
+
+        <!-- LOGGED TAB -->
+        <div class="tab-content" id="logged-tab">
+            <h2 style="margin-bottom: 24px;">Call History & Search</h2>
+
+            <div class="filters-row">
+                <input type="text" id="logged-search" class="search-input" placeholder="Search phone, name, business...">
+                <select id="logged-stage-filter" class="filter-select">
+                    <option value="">All Stages</option>
+                    <option value="cold">Cold</option>
+                    <option value="warm">Warm</option>
+                    <option value="demo">Demo</option>
+                    <option value="closed">Closed</option>
+                </select>
+                <select id="logged-outcome-filter" class="filter-select">
+                    <option value="">All Outcomes</option>
+                    <option value="voicemail">Voicemail</option>
+                    <option value="interested">Interested</option>
+                    <option value="demo_booked">Demo Booked</option>
+                    <option value="not_interested">Not Interested</option>
+                    <option value="callback">Callback</option>
+                </select>
+                <input type="date" id="logged-date-from" class="filter-select" placeholder="From Date">
+                <input type="date" id="logged-date-to" class="filter-select" placeholder="To Date">
+                <button class="btn-primary" id="export-csv-btn">Export CSV</button>
+            </div>
+
+            <div id="logged-results"></div>
         </div>
 
         <!-- IMPORT TAB -->
         <div class="tab-content" id="import-tab">
-            <h2>Import Contacts from CSV</h2>
+            <h2 style="margin-bottom: 24px;">Import Contacts from CSV</h2>
 
-            <div class="form-section">
-                <h3 style="margin-bottom: 15px;">Step 1: Upload CSV File</h3>
-                <input type="file" id="csv-file-input" accept=".csv" style="margin-bottom: 20px;">
-                <button class="btn-primary" id="parse-csv-btn" style="max-width: 200px; disabled">Parse CSV</button>
+            <div class="upload-zone" id="upload-zone">
+                <div class="icon">📤</div>
+                <div class="text">Drag and drop CSV file here, or click to browse</div>
+                <input type="file" id="csv-file-input" accept=".csv" style="display: none;">
             </div>
 
-            <div class="form-section hidden" id="mapping-section">
-                <h3 style="margin-bottom: 15px;">Step 2: Map CSV Columns</h3>
-                <p style="margin-bottom: 20px; color: #666;">Map your CSV columns to the app fields. Phone and Business are required.</p>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Phone Number Column *</label>
-                        <select id="map-phone" class="form-control">
-                            <option value="">-- Select Column --</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Business Name Column *</label>
-                        <select id="map-business" class="form-control">
-                            <option value="">-- Select Column --</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Contact Name Column (Optional)</label>
-                        <select id="map-name" class="form-control">
-                            <option value="">-- Select Column --</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Website Column (Optional)</label>
-                        <select id="map-website" class="form-control">
-                            <option value="">-- Select Column --</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div style="margin-top: 20px;">
-                    <h4 style="margin-bottom: 10px;">Preview - What will be imported (first 5 rows):</h4>
-                    <div id="csv-preview" style="overflow-x: auto; background: white; padding: 15px; border: 1px solid #ddd; border-radius: 5px;"></div>
-                </div>
-
-                <div class="form-row" style="margin-top: 20px;">
-                    <button class="btn-primary" id="import-contacts-btn">Import Contacts</button>
-                    <button class="btn-primary" id="cancel-import-btn" style="background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);">Cancel</button>
-                </div>
-            </div>
-
-            <div class="form-section" id="import-summary">
+            <div class="import-summary">
                 <h3>Current Contacts</h3>
                 <p id="contact-count">0 contacts in database</p>
             </div>
         </div>
+    </div>
 
-        <!-- HISTORY TAB -->
-        <div class="tab-content" id="history-tab">
-            <h2>Call History & Search</h2>
-
-            <div class="form-section">
-                <div class="form-row single">
-                    <div class="form-group">
-                        <label for="search-input">Search (phone, name, business)</label>
-                        <input type="text" id="search-input" class="form-control" placeholder="Search call history..." autocomplete="off">
-                    </div>
+    <!-- QUICK-LOG MODAL -->
+    <div class="modal-overlay" id="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <button class="modal-close" id="modal-close">&times;</button>
+                <div class="modal-business" id="modal-business">Business Name</div>
+                <div class="modal-phone" id="modal-phone">+1-234-567-8900</div>
+            </div>
+            <div class="modal-body">
+                <div class="outcome-buttons">
+                    <button class="outcome-btn voicemail" data-outcome="voicemail">
+                        <span class="emoji">📞</span>
+                        <span>Voicemail</span>
+                    </button>
+                    <button class="outcome-btn interested" data-outcome="interested">
+                        <span class="emoji">⭐</span>
+                        <span>Interested</span>
+                    </button>
+                    <button class="outcome-btn demo_booked" data-outcome="demo_booked">
+                        <span class="emoji">🎯</span>
+                        <span>Demo Booked</span>
+                    </button>
+                    <button class="outcome-btn not_interested" data-outcome="not_interested">
+                        <span class="emoji">❌</span>
+                        <span>Not Interested</span>
+                    </button>
+                    <button class="outcome-btn callback" data-outcome="callback">
+                        <span class="emoji">🔄</span>
+                        <span>Callback</span>
+                    </button>
                 </div>
 
-                <div class="form-row" style="grid-template-columns: 1fr 1fr 1fr;">
-                    <div class="form-group">
-                        <label for="filter-outcome">Filter by Outcome</label>
-                        <select id="filter-outcome" class="form-control">
-                            <option value="">All Outcomes</option>
-                            <option value="voicemail">Voicemail</option>
-                            <option value="interested">Interested</option>
-                            <option value="not_interested">Not Interested</option>
-                            <option value="callback">Callback</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="filter-date-from">From Date</label>
-                        <input type="date" id="filter-date-from" class="form-control">
-                    </div>
-                    <div class="form-group">
-                        <label for="filter-date-to">To Date</label>
-                        <input type="date" id="filter-date-to" class="form-control">
-                    </div>
+                <div class="callback-note-container" id="callback-note-container">
+                    <input type="text" class="callback-note-input" id="callback-note-input"
+                           placeholder="e.g., Call at 4:40 when manager returns (Press Enter to log)" maxlength="200">
                 </div>
 
-                <div class="form-row">
-                    <button class="btn-primary" id="clear-filters-btn" style="background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);">Clear Filters</button>
-                    <button class="btn-primary" id="export-csv-btn">Export to CSV</button>
+                <div class="text-sent-checkbox">
+                    <input type="checkbox" id="modal-text-sent">
+                    <label for="modal-text-sent">Text sent?</label>
                 </div>
             </div>
-
-            <div id="history-results"></div>
         </div>
     </div>
 
     <script>
+        // ===== GLOBAL STATE =====
+        let currentTab = 'dashboard';
+        let currentChartPeriod = 7;
+        let currentContactId = null;
+        let callListLimit = 50;
+        let selectedOutcome = null;
+
         // ===== DATA LAYER =====
 
-        const Storage = {
-            save: (key, data) => {
-                try {
-                    localStorage.setItem(key, JSON.stringify(data));
-                    return true;
-                } catch (e) {
-                    console.error('Storage error:', e);
-                    return false;
-                }
-            },
-            load: (key) => {
-                try {
-                    const data = localStorage.getItem(key);
-                    return data ? JSON.parse(data) : null;
-                } catch (e) {
-                    console.error('Storage error:', e);
-                    return null;
-                }
-            },
-            clear: (key) => {
-                localStorage.removeItem(key);
-            }
-        };
-
-        const generateUUID = () => {
+        function generateUUID() {
             return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
                 const r = Math.random() * 16 | 0;
-                const v = c == 'x' ? r : (r & 0x3 | 0x8);
+                const v = c === 'x' ? r : (r & 0x3 | 0x8);
                 return v.toString(16);
-            });
-        };
-
-        const normalizePhone = (phone) => {
-            return phone.replace(/\D/g, '');
-        };
-
-        const formatPhone = (phone) => {
-            const cleaned = normalizePhone(phone);
-            if (cleaned.length === 10) {
-                return `${cleaned.slice(0,3)}-${cleaned.slice(3,6)}-${cleaned.slice(6)}`;
-            }
-            return phone;
-        };
-
-        const ContactManager = {
-            getAll: () => Storage.load('callTracker_contacts') || [],
-
-            save: (contacts) => Storage.save('callTracker_contacts', contacts),
-
-            add: (contact) => {
-                const contacts = ContactManager.getAll();
-                contacts.push({
-                    id: generateUUID(),
-                    phone: contact.phone,
-                    name: contact.name || '',
-                    business: contact.business || '',
-                    website: contact.website || '',
-                    importedAt: new Date().toISOString(),
-                    lastCalled: null,
-                    callCount: 0,
-                    stage: 'cold'
-                });
-                ContactManager.save(contacts);
-                return contacts[contacts.length - 1];
-            },
-
-            update: (id, changes) => {
-                const contacts = ContactManager.getAll();
-                const index = contacts.findIndex(c => c.id === id);
-                if (index !== -1) {
-                    contacts[index] = { ...contacts[index], ...changes };
-                    ContactManager.save(contacts);
-                    return contacts[index];
-                }
-                return null;
-            },
-
-            findByPhone: (phone) => {
-                const normalized = normalizePhone(phone);
-                const contacts = ContactManager.getAll();
-                return contacts.find(c => normalizePhone(c.phone) === normalized);
-            },
-
-            updateAfterCall: (phone) => {
-                const contact = ContactManager.findByPhone(phone);
-                if (contact) {
-                    ContactManager.update(contact.id, {
-                        lastCalled: new Date().toISOString(),
-                        callCount: contact.callCount + 1
-                    });
-                }
-            }
-        };
-
-        const CallLogManager = {
-            getAll: () => Storage.load('callTracker_callLogs') || [],
-
-            save: (logs) => Storage.save('callTracker_callLogs', logs),
-
-            add: (log) => {
-                const logs = CallLogManager.getAll();
-                const newLog = {
-                    id: generateUUID(),
-                    contactId: log.contactId || null,
-                    phone: log.phone,
-                    name: log.name || '',
-                    business: log.business || '',
-                    timestamp: log.timestamp || new Date().toISOString(),
-                    outcome: log.outcome,
-                    textSent: log.textSent || false,
-                    notes: log.notes || '',
-                    editedTimestamp: log.editedTimestamp || false
-                };
-                logs.push(newLog);
-                CallLogManager.save(logs);
-
-                // Update contact
-                ContactManager.updateAfterCall(log.phone);
-
-                return newLog;
-            },
-
-            getTodaysLogs: () => {
-                const logs = CallLogManager.getAll();
-                const today = new Date().toISOString().split('T')[0];
-                return logs.filter(log => log.timestamp.split('T')[0] === today);
-            },
-
-            getRecentLogs: (limit = 10) => {
-                const logs = CallLogManager.getAll();
-                return logs.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)).slice(0, limit);
-            }
-        };
-
-        // ===== UI STATE =====
-
-        let selectedOutcome = null;
-        let lastLoggedCallId = null;
-
-        // ===== TAB NAVIGATION =====
-
-        const tabButtons = document.querySelectorAll('.tab-btn');
-        const tabContents = document.querySelectorAll('.tab-content');
-
-        tabButtons.forEach(btn => {
-            btn.addEventListener('click', () => {
-                const targetTab = btn.dataset.tab;
-
-                // Update buttons
-                tabButtons.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-
-                // Update content
-                tabContents.forEach(content => {
-                    content.classList.remove('active');
-                });
-                document.getElementById(`${targetTab}-tab`).classList.add('active');
-            });
-        });
-
-        // ===== OUTCOME BUTTONS =====
-
-        const outcomeButtons = document.querySelectorAll('.outcome-btn');
-        const selectedOutcomeInput = document.getElementById('selected-outcome');
-
-        outcomeButtons.forEach(btn => {
-            btn.addEventListener('click', () => {
-                const outcome = btn.dataset.outcome;
-                selectedOutcome = outcome;
-                selectedOutcomeInput.value = outcome;
-
-                // Update visual state
-                outcomeButtons.forEach(b => b.classList.remove('selected'));
-                btn.classList.add('selected');
-            });
-        });
-
-        // Keyboard shortcuts for outcomes (1-4 keys)
-        document.addEventListener('keydown', (e) => {
-            // Only if phone input is focused and not typing in other inputs
-            if (document.activeElement.tagName === 'TEXTAREA') return;
-
-            const outcomeMap = {
-                '1': 'voicemail',
-                '2': 'interested',
-                '3': 'not_interested',
-                '4': 'callback'
-            };
-
-            if (outcomeMap[e.key]) {
-                e.preventDefault();
-                const outcome = outcomeMap[e.key];
-                selectedOutcome = outcome;
-                selectedOutcomeInput.value = outcome;
-
-                // Update visual state
-                outcomeButtons.forEach(b => {
-                    b.classList.remove('selected');
-                    if (b.dataset.outcome === outcome) {
-                        b.classList.add('selected');
-                    }
-                });
-            }
-        });
-
-        // ===== EXPAND LINKS =====
-
-        document.getElementById('toggle-notes').addEventListener('click', (e) => {
-            e.preventDefault();
-            const container = document.getElementById('notes-container');
-            container.classList.toggle('hidden');
-            e.target.textContent = container.classList.contains('hidden') ? '+ Add notes' : '- Hide notes';
-        });
-
-        document.getElementById('edit-time').addEventListener('click', (e) => {
-            e.preventDefault();
-            const container = document.getElementById('time-container');
-            const input = document.getElementById('call-time-input');
-
-            if (container.classList.contains('hidden')) {
-                // Set to current time when opening
-                const now = new Date();
-                const localDateTime = now.toISOString().slice(0, 16);
-                input.value = localDateTime;
-            }
-
-            container.classList.toggle('hidden');
-            e.target.textContent = container.classList.contains('hidden') ? 'Edit time' : 'Use current time';
-        });
-
-        // ===== CALL LOG FORM =====
-
-        const callLogForm = document.getElementById('call-log-form');
-        const phoneInput = document.getElementById('phone-input');
-        const businessInput = document.getElementById('business-input');
-        const nameInput = document.getElementById('name-input');
-        const textSentCheckbox = document.getElementById('text-sent-checkbox');
-        const notesInput = document.getElementById('notes-input');
-        const callTimeInput = document.getElementById('call-time-input');
-
-        callLogForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-
-            // Validate
-            if (!phoneInput.value.trim()) {
-                showToast('Please enter a phone number', 'error');
-                return;
-            }
-
-            if (!selectedOutcome) {
-                showToast('Please select a call outcome', 'error');
-                return;
-            }
-
-            // Get timestamp
-            let timestamp;
-            let editedTimestamp = false;
-            if (!document.getElementById('time-container').classList.contains('hidden') && callTimeInput.value) {
-                timestamp = new Date(callTimeInput.value).toISOString();
-                editedTimestamp = true;
-            } else {
-                timestamp = new Date().toISOString();
-            }
-
-            // Find contact
-            const contact = ContactManager.findByPhone(phoneInput.value);
-
-            // Create log
-            const log = {
-                contactId: contact ? contact.id : null,
-                phone: phoneInput.value.trim(),
-                name: nameInput.value.trim(),
-                business: businessInput.value.trim(),
-                timestamp: timestamp,
-                outcome: selectedOutcome,
-                textSent: textSentCheckbox.checked,
-                notes: notesInput.value.trim(),
-                editedTimestamp: editedTimestamp
-            };
-
-            const savedLog = CallLogManager.add(log);
-            lastLoggedCallId = savedLog.id;
-
-            // Update UI
-            updateStats();
-            updateRecentCalls();
-            updateCallsPerDayChart();
-            updateTimePatterns();
-            updateHistoryResults();
-
-            // Reset form
-            callLogForm.reset();
-            selectedOutcome = null;
-            outcomeButtons.forEach(b => b.classList.remove('selected'));
-            document.getElementById('notes-container').classList.add('hidden');
-            document.getElementById('time-container').classList.add('hidden');
-            document.getElementById('toggle-notes').textContent = '+ Add notes';
-            document.getElementById('edit-time').textContent = 'Edit time';
-
-            // Show stage buttons
-            document.getElementById('stage-buttons').classList.remove('hidden');
-
-            // Auto-focus phone input
-            phoneInput.focus();
-
-            showToast('Call logged successfully!', 'success');
-        });
-
-        // ===== STAGE BUTTONS =====
-
-        const stageButtons = document.querySelectorAll('.stage-btn');
-
-        stageButtons.forEach(btn => {
-            btn.addEventListener('click', () => {
-                if (!lastLoggedCallId) return;
-
-                const stage = btn.dataset.stage;
-                const log = CallLogManager.getAll().find(l => l.id === lastLoggedCallId);
-
-                if (log && log.contactId) {
-                    // Confirm before marking as dead
-                    if (stage === 'dead') {
-                        if (!confirm('Mark this contact as dead? They will be removed from your call list.')) {
-                            return;
-                        }
-                    }
-
-                    ContactManager.update(log.contactId, { stage: stage });
-
-                    let message = '';
-                    if (stage === 'warm') message = 'Marked as warm lead';
-                    else if (stage === 'demo') message = 'Demo booked!';
-                    else if (stage === 'closed') message = 'Marked as closed deal!';
-                    else if (stage === 'dead') message = 'Marked as dead lead';
-
-                    showToast(message, 'success');
-
-                    // Update charts
-                    updateConversionFunnelChart();
-                    updateCallList();
-
-                    // Hide stage buttons after selection
-                    document.getElementById('stage-buttons').classList.add('hidden');
-                    lastLoggedCallId = null;
-                } else {
-                    showToast('No contact found for this call', 'error');
-                }
-            });
-        });
-
-        // ===== UPDATE STATS =====
-
-        function updateStats() {
-            const todaysLogs = CallLogManager.getTodaysLogs();
-
-            const stats = {
-                total: todaysLogs.length,
-                voicemail: todaysLogs.filter(l => l.outcome === 'voicemail').length,
-                interested: todaysLogs.filter(l => l.outcome === 'interested').length,
-                not_interested: todaysLogs.filter(l => l.outcome === 'not_interested').length,
-                callback: todaysLogs.filter(l => l.outcome === 'callback').length
-            };
-
-            // Update with animation
-            const statElements = {
-                'stat-total': stats.total,
-                'stat-vm': stats.voicemail,
-                'stat-interested': stats.interested,
-                'stat-not-interested': stats.not_interested,
-                'stat-callback': stats.callback
-            };
-
-            Object.entries(statElements).forEach(([id, value]) => {
-                const element = document.getElementById(id);
-                if (element.textContent !== value.toString()) {
-                    element.textContent = value;
-                    element.classList.add('updated');
-                    setTimeout(() => element.classList.remove('updated'), 400);
-                }
             });
         }
 
-        // ===== UPDATE RECENT CALLS =====
+        function normalizePhone(phone) {
+            return phone.replace(/\D/g, '');
+        }
 
-        function updateRecentCalls() {
-            const recentLogs = CallLogManager.getRecentLogs(10);
-            const container = document.getElementById('recent-calls-list');
+        function formatPhone(phone) {
+            const cleaned = normalizePhone(phone);
+            if (cleaned.length === 10) {
+                return `+1-${cleaned.slice(0,3)}-${cleaned.slice(3,6)}-${cleaned.slice(6)}`;
+            } else if (cleaned.length === 11 && cleaned[0] === '1') {
+                return `+1-${cleaned.slice(1,4)}-${cleaned.slice(4,7)}-${cleaned.slice(7)}`;
+            }
+            return phone;
+        }
 
-            if (recentLogs.length === 0) {
-                container.innerHTML = '<div class="empty-state"><p>No calls logged yet today. Start calling!</p></div>';
+        function getContacts() {
+            return JSON.parse(localStorage.getItem('focusflow_contacts') || '[]');
+        }
+
+        function saveContacts(contacts) {
+            try {
+                localStorage.setItem('focusflow_contacts', JSON.stringify(contacts));
+            } catch (e) {
+                if (e.name === 'QuotaExceededError') {
+                    showToast('Storage quota exceeded! Consider exporting and clearing old data.', 'error');
+                } else {
+                    showToast('Error saving contacts: ' + e.message, 'error');
+                }
+                throw e;
+            }
+        }
+
+        function getCalls() {
+            return JSON.parse(localStorage.getItem('focusflow_calls') || '[]');
+        }
+
+        function saveCalls(calls) {
+            try {
+                localStorage.setItem('focusflow_calls', JSON.stringify(calls));
+            } catch (e) {
+                if (e.name === 'QuotaExceededError') {
+                    showToast('Storage quota exceeded! Consider exporting and clearing old data.', 'error');
+                } else {
+                    showToast('Error saving calls: ' + e.message, 'error');
+                }
+                throw e;
+            }
+        }
+
+        function addContact(contactData) {
+            const contacts = getContacts();
+            const newContact = {
+                id: generateUUID(),
+                phone: formatPhone(contactData.phone),
+                business: contactData.business,
+                website: contactData.website || "",
+                contactName: contactData.contactName || "",
+                stage: "cold",
+                callCount: 0,
+                lastCalled: null,
+                lastOutcome: null,
+                callbackNote: "",
+                createdAt: new Date().toISOString()
+            };
+            contacts.push(newContact);
+            saveContacts(contacts);
+            return newContact;
+        }
+
+        function updateContact(contactId, updates) {
+            const contacts = getContacts();
+            const index = contacts.findIndex(c => c.id === contactId);
+            if (index !== -1) {
+                contacts[index] = { ...contacts[index], ...updates };
+                saveContacts(contacts);
+                return contacts[index];
+            }
+            return null;
+        }
+
+        function getContactById(contactId) {
+            const contacts = getContacts();
+            return contacts.find(c => c.id === contactId);
+        }
+
+        function findContactByPhone(phone) {
+            const normalized = normalizePhone(phone);
+            const contacts = getContacts();
+            return contacts.find(c => normalizePhone(c.phone) === normalized);
+        }
+
+        // ===== PRIORITY QUEUE LOGIC =====
+
+        function getDaysSinceLastCall(contact) {
+            if (!contact.lastCalled) return 0;
+            const lastCallDate = new Date(contact.lastCalled);
+            const now = new Date();
+            const diffTime = Math.abs(now - lastCallDate);
+            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+            return diffDays;
+        }
+
+        function getPriorityScore(contact) {
+            const daysSince = getDaysSinceLastCall(contact);
+
+            // Tier 1: VM callbacks (score 90-100)
+            // Use ranges to ensure contacts don't disappear between check-ins
+            if (contact.lastOutcome === 'voicemail') {
+                if (daysSince >= 7) return 90;      // Day 7+: "VM - Day 7"
+                if (daysSince >= 3) return 95;      // Day 3-6: "VM - Day 3"
+                if (daysSince >= 1) return 100;     // Day 1-2: "VM - Call Now"
+            }
+
+            // Tier 2: Scheduled callbacks (score 80)
+            if (contact.lastOutcome === 'callback') {
+                return 80;
+            }
+
+            // Tier 3: Fresh cold leads (score 70)
+            if (contact.callCount === 0) {
+                return 70;
+            }
+
+            // Tier 4: Aged cold leads (score 50)
+            if (contact.callCount <= 2 && contact.stage === 'cold') {
+                return 50;
+            }
+
+            // Tier 5: Deprioritized (score 10)
+            if (contact.callCount >= 3 && contact.stage === 'cold') {
+                return 10;
+            }
+
+            return 0;
+        }
+
+        function getStatusBadge(contact) {
+            const daysSince = getDaysSinceLastCall(contact);
+            const priority = getPriorityScore(contact);
+
+            if (priority === 100) {
+                return { class: 'vm-callback', text: '🔥 VM - Call Now' };
+            } else if (priority === 95) {
+                return { class: 'vm-callback', text: '🔥 VM - Day 3' };
+            } else if (priority === 90) {
+                return { class: 'vm-callback', text: '🔥 VM - Day 7' };
+            } else if (priority === 80) {
+                return { class: 'scheduled-callback', text: '🔄 Callback' };
+            } else if (priority === 70) {
+                return { class: 'cold', text: '🆕 Cold' };
+            } else if (priority === 50) {
+                return { class: 'cold', text: '📋 Cold' };
+            } else if (priority === 10) {
+                return { class: 'deprioritized', text: '⬇️ Cold' };
+            } else if (contact.stage === 'warm') {
+                return { class: 'warm', text: '🔥 Warm' };
+            }
+
+            return { class: 'cold', text: 'Cold' };
+        }
+
+        function getCallListContacts(limit, filter, searchTerm) {
+            let contacts = getContacts();
+
+            // Exclude demo and closed stages
+            contacts = contacts.filter(c => c.stage !== 'demo' && c.stage !== 'closed');
+
+            // Apply filters
+            if (filter === 'priority') {
+                contacts = contacts.filter(c => {
+                    const daysSince = getDaysSinceLastCall(c);
+                    return (c.lastOutcome === 'voicemail' && [1, 3, 7].includes(daysSince)) ||
+                           c.lastOutcome === 'callback';
+                });
+            } else if (filter === 'cold') {
+                contacts = contacts.filter(c => c.callCount === 0 || (c.callCount <= 2 && c.stage === 'cold'));
+            } else if (filter.startsWith('stage:')) {
+                const stage = filter.split(':')[1];
+                contacts = contacts.filter(c => c.stage === stage);
+            }
+
+            // Apply search
+            if (searchTerm) {
+                const term = searchTerm.toLowerCase();
+                contacts = contacts.filter(c =>
+                    c.phone.toLowerCase().includes(term) ||
+                    c.business.toLowerCase().includes(term) ||
+                    (c.contactName && c.contactName.toLowerCase().includes(term))
+                );
+            }
+
+            // Sort by priority
+            contacts.sort((a, b) => {
+                const aPriority = getPriorityScore(a);
+                const bPriority = getPriorityScore(b);
+                return bPriority - aPriority;
+            });
+
+            return { contacts: contacts.slice(0, limit), total: contacts.length };
+        }
+
+        function getRelativeTime(timestamp) {
+            if (!timestamp) return 'Never';
+
+            const now = new Date();
+            const date = new Date(timestamp);
+            const diffMs = now - date;
+            const diffMins = Math.floor(diffMs / (1000 * 60));
+            const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+            const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+            if (diffMins < 1) return 'Just now';
+            if (diffMins < 60) return `${diffMins} mins ago`;
+            if (diffHours < 24) return `${diffHours} hours ago`;
+            if (diffDays < 7) return `${diffDays} days ago`;
+            if (diffDays < 30) return `${Math.floor(diffDays / 7)} weeks ago`;
+            return date.toLocaleDateString();
+        }
+
+        // ===== CALL LOGGING =====
+
+        function logCall(contactId, outcome, callbackNote, textSent) {
+            const contact = getContactById(contactId);
+            if (!contact) return;
+
+            // Create call log
+            const callLog = {
+                id: generateUUID(),
+                contactId: contactId,
+                phone: contact.phone,
+                business: contact.business,
+                contactName: contact.contactName,
+                outcome: outcome,
+                callbackNote: callbackNote || "",
+                textSent: textSent,
+                timestamp: new Date().toISOString()
+            };
+
+            const calls = getCalls();
+            calls.push(callLog);
+            saveCalls(calls);
+
+            // Update contact
+            const updates = {
+                lastCalled: new Date().toISOString(),
+                callCount: contact.callCount + 1,
+                lastOutcome: outcome
+            };
+
+            // Stage updates based on outcome
+            if (outcome === 'interested' || outcome === 'callback') {
+                updates.stage = 'warm';
+                if (outcome === 'callback') {
+                    updates.callbackNote = callbackNote;
+                }
+            } else if (outcome === 'demo_booked') {
+                updates.stage = 'demo';
+            } else if (outcome === 'not_interested') {
+                updates.stage = 'closed';
+            }
+            // voicemail keeps stage as 'cold'
+
+            updateContact(contactId, updates);
+
+            // Refresh UI
+            renderCallList();
+            updateDashboardStats();
+            updateAnalyticsChart();
+            updateTimeInsights();
+            updateRecentCalls();
+            updateLoggedResults();
+            closeQuickLogModal();
+
+            showToast('Call logged successfully!', 'success');
+        }
+
+        // ===== UI RENDERING =====
+
+        function renderCallList() {
+            const searchTerm = document.getElementById('call-list-search').value;
+            const filter = document.getElementById('call-list-filter').value;
+            const result = getCallListContacts(callListLimit, filter, searchTerm);
+            const tbody = document.getElementById('contacts-tbody');
+
+            if (result.contacts.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7">
+                            <div class="empty-state">
+                                <div class="icon">📋</div>
+                                <div class="text">No contacts found. Try adjusting your filters.</div>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                document.getElementById('show-more-btn').classList.add('hidden');
                 return;
             }
 
-            container.innerHTML = recentLogs.map(log => {
-                const time = new Date(log.timestamp).toLocaleTimeString('en-US', {
-                    hour: 'numeric',
-                    minute: '2-digit'
+            tbody.innerHTML = result.contacts.map(contact => {
+                const badge = getStatusBadge(contact);
+                const phone = contact.phone.length > 15 ? contact.phone.slice(0, 15) + '...' : contact.phone;
+                const business = contact.business.length > 30 ? contact.business.slice(0, 30) + '...' : contact.business;
+                const lastCalled = getRelativeTime(contact.lastCalled);
+                const notes = contact.callbackNote ? (contact.callbackNote.length > 40 ? contact.callbackNote.slice(0, 40) + '...' : contact.callbackNote) : '—';
+
+                return `
+                    <tr>
+                        <td class="checkbox-cell">
+                            <input type="checkbox" data-contact-id="${contact.id}">
+                        </td>
+                        <td><a href="tel:${contact.phone}" class="phone-link">${phone}</a></td>
+                        <td><span class="business-name" title="${contact.business}">${business}</span></td>
+                        <td>
+                            ${contact.website
+                                ? `<a href="${contact.website}" target="_blank" rel="noopener noreferrer" style="color: #667eea; text-decoration: none; display: flex; align-items: center; gap: 4px;" title="${contact.website}">
+                                    <span style="font-size: 16px;">🔗</span>
+                                    <span>Link</span>
+                                </a>`
+                                : '<span style="color: #9ca3af;">—</span>'}
+                        </td>
+                        <td><span class="badge ${badge.class}">${badge.text}</span></td>
+                        <td>${lastCalled}</td>
+                        <td title="${contact.callbackNote}">${notes}</td>
+                    </tr>
+                `;
+            }).join('');
+
+            // Show "Show More" button if there are more contacts
+            if (result.total > callListLimit) {
+                document.getElementById('show-more-btn').classList.remove('hidden');
+            } else {
+                document.getElementById('show-more-btn').classList.add('hidden');
+            }
+
+            // Attach checkbox listeners
+            tbody.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                checkbox.addEventListener('change', (e) => {
+                    if (e.target.checked) {
+                        const contactId = e.target.dataset.contactId;
+                        openQuickLogModal(contactId);
+                        e.target.checked = false; // Reset checkbox
+                    }
+                });
+            });
+        }
+
+        function updateDashboardStats() {
+            const calls = getCalls();
+            const today = new Date().toISOString().split('T')[0];
+            const todaysCalls = calls.filter(c => c.timestamp.split('T')[0] === today);
+
+            document.getElementById('stat-total').textContent = todaysCalls.length;
+            document.getElementById('stat-vm').textContent = todaysCalls.filter(c => c.outcome === 'voicemail').length;
+            document.getElementById('stat-interested').textContent = todaysCalls.filter(c => c.outcome === 'interested' || c.outcome === 'demo_booked').length;
+            document.getElementById('stat-not-interested').textContent = todaysCalls.filter(c => c.outcome === 'not_interested').length;
+            document.getElementById('stat-callback').textContent = todaysCalls.filter(c => c.outcome === 'callback').length;
+        }
+
+        function updateAnalyticsChart() {
+            const container = document.getElementById('analytics-chart');
+            const calls = getCalls();
+
+            if (calls.length === 0) {
+                container.innerHTML = '<div class="empty-state"><div class="text">No call data yet</div></div>';
+                return;
+            }
+
+            const chartData = getChartData(currentChartPeriod);
+            renderChart(chartData, currentChartPeriod);
+        }
+
+        function getChartData(period) {
+            const calls = getCalls();
+            const now = new Date();
+
+            // All Time view: Show all 12 months
+            if (period === 'all') {
+                const currentYear = now.getFullYear();
+                const monthlyCounts = {};
+
+                // Initialize all 12 months with 0
+                for (let month = 1; month <= 12; month++) {
+                    const monthKey = `${currentYear}-${String(month).padStart(2, '0')}`;
+                    monthlyCounts[monthKey] = { total: 0, voicemail: 0, interested: 0 };
+                }
+
+                // Get all calls and group by month
+                calls.forEach(call => {
+                    const date = new Date(call.timestamp);
+                    const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+
+                    if (monthlyCounts[monthKey]) {
+                        monthlyCounts[monthKey].total++;
+                        if (call.outcome === 'voicemail') monthlyCounts[monthKey].voicemail++;
+                        if (['interested', 'demo_booked'].includes(call.outcome)) monthlyCounts[monthKey].interested++;
+                    }
                 });
 
-                const outcomeText = log.outcome.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
-                const textStatus = log.textSent ? ' • Text sent' : '';
+                // Convert to sorted arrays (Jan through Dec)
+                const sortedMonths = Object.keys(monthlyCounts).sort();
+                const labels = sortedMonths.map(monthKey => {
+                    const [year, month] = monthKey.split('-');
+                    const date = new Date(year, parseInt(month) - 1, 1);
+                    return date.toLocaleDateString('en-US', { month: 'short' });
+                });
+
+                return {
+                    labels: labels,
+                    totalCalls: sortedMonths.map(month => monthlyCounts[month].total),
+                    voicemails: sortedMonths.map(month => monthlyCounts[month].voicemail),
+                    interested: sortedMonths.map(month => monthlyCounts[month].interested)
+                };
+            }
+
+            // 7 Days or 30 Days: Daily aggregation
+            const days = parseInt(period);
+            const dailyCounts = {};
+
+            // Initialize all days with 0
+            for (let i = 0; i < days; i++) {
+                const date = new Date(now);
+                date.setDate(date.getDate() - i);
+                const dateKey = date.toISOString().split('T')[0];
+                dailyCounts[dateKey] = { total: 0, voicemail: 0, interested: 0 };
+            }
+
+            // Count calls per day
+            calls.forEach(call => {
+                const dateKey = call.timestamp.split('T')[0];
+                if (dailyCounts.hasOwnProperty(dateKey)) {
+                    dailyCounts[dateKey].total++;
+                    if (call.outcome === 'voicemail') dailyCounts[dateKey].voicemail++;
+                    if (['interested', 'demo_booked'].includes(call.outcome)) dailyCounts[dateKey].interested++;
+                }
+            });
+
+            // Convert to arrays sorted by date
+            const sortedDates = Object.keys(dailyCounts).sort();
+
+            // Format labels based on period
+            const labels = sortedDates.map((date, index) => {
+                const d = new Date(date);
+
+                // For 30 days, show every 3rd label to keep it clean but visible
+                if (days === 30) {
+                    // Show label every 3 days (days 0, 3, 6, 9, 12, 15, 18, 21, 24, 27, 30)
+                    if (index % 3 === 0) {
+                        return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                    }
+                    return ''; // Empty string for hidden labels
+                }
+
+                // For 7 days, show all labels
+                return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            });
+
+            return {
+                labels: labels,
+                totalCalls: sortedDates.map(date => dailyCounts[date].total),
+                voicemails: sortedDates.map(date => dailyCounts[date].voicemail),
+                interested: sortedDates.map(date => dailyCounts[date].interested)
+            };
+        }
+
+        function renderChart(data, period) {
+            const container = document.getElementById('analytics-chart');
+            const maxValue = Math.max(...data.totalCalls, 1);
+
+            // Create bar chart showing total calls per day/month
+            // Adjust gap based on view: smaller gap for All Time (12 bars), normal for 7/30 days
+            const gapSize = period === 'all' ? '8px' : '2px';
+
+            let html = `<div style="position: relative; width: 100%; height: 100%; display: flex; align-items: flex-end; gap: ${gapSize};">`;
+
+            data.labels.forEach((label, i) => {
+                const totalHeight = (data.totalCalls[i] / maxValue) * 80;
+
+                html += `
+                    <div style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end;">
+                        <div style="position: relative; width: 100%; height: 250px; display: flex; align-items: flex-end;">
+                            <div style="width: 100%; height: ${totalHeight}%; background: linear-gradient(180deg, #667eea 0%, #764ba2 100%); border-radius: 4px 4px 0 0; position: relative;">
+                                ${data.totalCalls[i] > 0 ? `<div style="position: absolute; top: -20px; left: 50%; transform: translateX(-50%); font-size: 0.8em; font-weight: 700; color: #667eea;">${data.totalCalls[i]}</div>` : ''}
+                            </div>
+                        </div>
+                        <div style="margin-top: 8px; font-size: ${period === 'all' ? '0.8em' : '0.7em'}; color: #6b7280; text-align: center; height: 20px; line-height: 20px; white-space: nowrap;">${label}</div>
+                    </div>
+                `;
+            });
+
+            html += '</div>';
+
+            // Add legend
+            html += `
+                <div style="display: flex; justify-content: center; gap: 24px; margin-top: 24px; font-size: 0.85em;">
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                        <div style="width: 16px; height: 16px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 2px;"></div>
+                        <span>Total Calls</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                        <div style="width: 16px; height: 3px; background: #3b82f6;"></div>
+                        <span>Voicemails</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                        <div style="width: 16px; height: 3px; background: #10b981;"></div>
+                        <span>Interested</span>
+                    </div>
+                </div>
+            `;
+
+            container.innerHTML = html;
+        }
+
+        function updateTimeInsights() {
+            const calls = getCalls();
+            const today = new Date().toISOString().split('T')[0];
+            const todaysCalls = calls.filter(c => c.timestamp.split('T')[0] === today);
+
+            const container = document.getElementById('time-insights');
+
+            if (todaysCalls.length < 10) {
+                container.textContent = 'Not enough data yet. Log 10+ calls to see insights.';
+                return;
+            }
+
+            // Group by 2-hour windows
+            const windows = {};
+            todaysCalls.forEach(call => {
+                const hour = new Date(call.timestamp).getHours();
+                const window = Math.floor(hour / 2) * 2;
+                const windowKey = `${window}-${window + 2}`;
+
+                if (!windows[windowKey]) {
+                    windows[windowKey] = { total: 0, pickups: 0, vms: 0 };
+                }
+
+                windows[windowKey].total++;
+                if (['interested', 'not_interested', 'callback', 'demo_booked'].includes(call.outcome)) {
+                    windows[windowKey].pickups++;
+                } else if (call.outcome === 'voicemail') {
+                    windows[windowKey].vms++;
+                }
+            });
+
+            // Calculate pickup rates
+            const windowsWithRates = Object.entries(windows)
+                .filter(([_, data]) => data.total >= 10)
+                .map(([window, data]) => ({
+                    window,
+                    pickupRate: (data.pickups / data.total) * 100,
+                    vmRate: (data.vms / data.total) * 100,
+                    pickups: data.pickups,
+                    vms: data.vms,
+                    total: data.total
+                }));
+
+            if (windowsWithRates.length === 0) {
+                container.textContent = 'Not enough data yet. Need 10+ calls in a 2-hour window.';
+                return;
+            }
+
+            // Find best and worst times
+            windowsWithRates.sort((a, b) => b.pickupRate - a.pickupRate);
+            const best = windowsWithRates.slice(0, 2);
+            const worst = windowsWithRates[windowsWithRates.length - 1];
+
+            const formatWindow = (w) => {
+                const [start, end] = w.split('-').map(Number);
+                const formatHour = (h) => {
+                    const period = h >= 12 ? 'pm' : 'am';
+                    const hour12 = h % 12 || 12;
+                    return `${hour12}${period}`;
+                };
+                return `${formatHour(start)}-${formatHour(end)}`;
+            };
+
+            let text = 'Best times: ';
+            text += best.map(b =>
+                `${formatWindow(b.window)} (${Math.round(b.pickupRate)}% pickup rate, ${b.pickups} pickups / ${b.total} calls)`
+            ).join(', ');
+
+            text += ` • Avoid: ${formatWindow(worst.window)} (${Math.round(worst.vmRate)}% voicemail rate, ${worst.vms} VMs / ${worst.total} calls)`;
+
+            container.textContent = text;
+        }
+
+        function updateRecentCalls() {
+            const calls = getCalls();
+            const container = document.getElementById('recent-calls-list');
+
+            if (calls.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="icon">📞</div>
+                        <div class="text">No calls logged yet today. Start calling!</div>
+                    </div>
+                `;
+                return;
+            }
+
+            const recentCalls = calls
+                .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+                .slice(0, 10);
+
+            // Get contacts for website lookup
+            const contacts = getContacts();
+
+            container.innerHTML = recentCalls.map(call => {
+                const outcomeColors = {
+                    voicemail: '#6b7280',
+                    interested: '#10b981',
+                    demo_booked: '#8b5cf6',
+                    not_interested: '#ef4444',
+                    callback: '#f59e0b'
+                };
+
+                const outcomeLabels = {
+                    voicemail: 'VM',
+                    interested: 'Interested',
+                    demo_booked: 'Demo',
+                    not_interested: 'Not Interested',
+                    callback: 'Callback'
+                };
+
+                // Find contact to get website
+                const contact = contacts.find(c => c.id === call.contactId);
+                const website = contact?.website || '';
 
                 return `
                     <div class="call-item">
-                        <div class="call-item-header">
-                            <span class="call-item-phone">${formatPhone(log.phone)}</span>
-                            <span class="call-item-time">${time}</span>
+                        <div class="call-item-left">
+                            <div class="call-item-business">${call.business || call.phone}</div>
+                            <div class="call-item-details" style="display: flex; flex-direction: column; gap: 4px; margin-top: 4px;">
+                                <div style="font-size: 0.85em; color: #6b7280;">
+                                    <a href="tel:${call.phone}" style="color: #667eea; text-decoration: none;">
+                                        ${call.phone}
+                                    </a>
+                                </div>
+                                ${website ? `
+                                    <div style="font-size: 0.85em; color: #6b7280;">
+                                        <a href="${website}" target="_blank" rel="noopener noreferrer" style="color: #667eea; text-decoration: none; display: flex; align-items: center; gap: 4px;">
+                                            <span>🔗</span>
+                                            <span>${website.replace(/^https?:\/\/(www\.)?/, '').split('/')[0]}</span>
+                                        </a>
+                                    </div>
+                                ` : ''}
+                                <div style="margin-top: 4px;">
+                                    <span class="badge" style="background: ${outcomeColors[call.outcome]}20; color: ${outcomeColors[call.outcome]}; border-color: ${outcomeColors[call.outcome]}40;">
+                                        ${outcomeLabels[call.outcome]}
+                                    </span>
+                                </div>
+                            </div>
                         </div>
-                        <div class="call-item-details">
-                            ${log.business || 'No business name'} ${log.name ? '• ' + log.name : ''} • ${outcomeText}${textStatus}
-                        </div>
-                        ${log.notes ? `<div class="call-item-details" style="margin-top: 5px; font-style: italic;">${log.notes}</div>` : ''}
+                        <div class="call-item-time">${getRelativeTime(call.timestamp)}</div>
                     </div>
                 `;
             }).join('');
         }
 
-        // ===== TOAST NOTIFICATION =====
+        function updateLoggedResults() {
+            const searchTerm = document.getElementById('logged-search').value.toLowerCase();
+            const stageFilter = document.getElementById('logged-stage-filter').value;
+            const outcomeFilter = document.getElementById('logged-outcome-filter').value;
+            const dateFrom = document.getElementById('logged-date-from').value;
+            const dateTo = document.getElementById('logged-date-to').value;
 
-        function showToast(message, type = 'success') {
-            const toast = document.createElement('div');
-            toast.className = 'toast';
-            toast.textContent = message;
+            let calls = getCalls();
 
-            if (type === 'error') {
-                toast.style.background = '#ef4444';
+            // Apply filters
+            if (searchTerm) {
+                calls = calls.filter(c =>
+                    c.phone.toLowerCase().includes(searchTerm) ||
+                    c.business.toLowerCase().includes(searchTerm) ||
+                    (c.contactName && c.contactName.toLowerCase().includes(searchTerm))
+                );
             }
 
-            document.body.appendChild(toast);
-
-            setTimeout(() => {
-                toast.remove();
-            }, 3000);
-        }
-
-        // ===== CSV IMPORT =====
-
-        let csvData = null;
-        let csvHeaders = [];
-
-        const csvFileInput = document.getElementById('csv-file-input');
-        const parseCsvBtn = document.getElementById('parse-csv-btn');
-        const mappingSection = document.getElementById('mapping-section');
-        const importContactsBtn = document.getElementById('import-contacts-btn');
-        const cancelImportBtn = document.getElementById('cancel-import-btn');
-
-        csvFileInput.addEventListener('change', (e) => {
-            if (e.target.files.length > 0) {
-                parseCsvBtn.disabled = false;
-                parseCsvBtn.style.opacity = '1';
-            }
-        });
-
-        parseCsvBtn.addEventListener('click', () => {
-            const file = csvFileInput.files[0];
-            if (!file) {
-                showToast('Please select a CSV file', 'error');
-                return;
+            if (outcomeFilter) {
+                calls = calls.filter(c => c.outcome === outcomeFilter);
             }
 
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                const text = e.target.result;
-                try {
-                    parseCSV(text);
-                    mappingSection.classList.remove('hidden');
-                    showToast('CSV parsed successfully!', 'success');
-                } catch (err) {
-                    showToast('Error parsing CSV: ' + err.message, 'error');
-                }
-            };
-            reader.readAsText(file);
-        });
-
-        function parseCSV(text) {
-            const lines = text.trim().split('\n');
-            if (lines.length < 2) {
-                throw new Error('CSV must have at least a header row and one data row');
-            }
-
-            // Parse headers
-            csvHeaders = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, ''));
-
-            // Parse rows
-            csvData = [];
-            for (let i = 1; i < lines.length; i++) {
-                if (!lines[i].trim()) continue;
-
-                const values = lines[i].split(',').map(v => v.trim().replace(/^"|"$/g, ''));
-                const row = {};
-                csvHeaders.forEach((header, index) => {
-                    row[header] = values[index] || '';
-                });
-                csvData.push(row);
-            }
-
-            // Populate mapping dropdowns
-            populateMappingDropdowns();
-
-            // Show preview
-            showCSVPreview();
-        }
-
-        function populateMappingDropdowns() {
-            const phoneSelect = document.getElementById('map-phone');
-            const businessSelect = document.getElementById('map-business');
-            const nameSelect = document.getElementById('map-name');
-            const websiteSelect = document.getElementById('map-website');
-
-            [phoneSelect, businessSelect, nameSelect, websiteSelect].forEach(select => {
-                select.innerHTML = '<option value="">-- Select Column --</option>';
-                csvHeaders.forEach(header => {
-                    const option = document.createElement('option');
-                    option.value = header;
-                    option.textContent = header;
-                    select.appendChild(option);
-                });
-            });
-
-            // Auto-detect Clay CSV column names (exact matches first, then fallbacks)
-            csvHeaders.forEach(header => {
-                const lower = header.toLowerCase().trim();
-                const exact = header.trim();
-
-                // Phone detection - exact match "phone" first, then fallbacks
-                if (!phoneSelect.value) {
-                    if (exact === 'phone' || lower === 'phone') {
-                        phoneSelect.value = header;
-                    } else if (lower.includes('phone') || lower.includes('number') || lower.includes('mobile')) {
-                        phoneSelect.value = header;
-                    }
-                }
-
-                // Business name detection - exact match "name" first, then fallbacks
-                if (!businessSelect.value) {
-                    if (exact === 'name' || lower === 'name') {
-                        businessSelect.value = header;
-                    } else if ((lower.includes('business') || lower.includes('company')) && !lower.includes('contact')) {
-                        businessSelect.value = header;
-                    }
-                }
-
-                // Website detection - exact match "website" first, then fallbacks (ignore Google Maps URL)
-                if (!websiteSelect.value) {
-                    if (lower.includes('google maps')) {
-                        // Skip Google Maps URL column
-                        return;
-                    }
-                    if (exact === 'website' || lower === 'website') {
-                        websiteSelect.value = header;
-                    } else if (lower.includes('website') || (lower.includes('url') && !lower.includes('maps'))) {
-                        websiteSelect.value = header;
-                    }
-                }
-            });
-
-            // Trigger preview update when mappings change
-            [phoneSelect, businessSelect, nameSelect, websiteSelect].forEach(select => {
-                select.addEventListener('change', showCSVPreview);
-            });
-        }
-
-        function showCSVPreview() {
-            const preview = document.getElementById('csv-preview');
-            const previewData = csvData.slice(0, 5);
-
-            // Get selected mappings
-            const phoneCol = document.getElementById('map-phone').value;
-            const businessCol = document.getElementById('map-business').value;
-            const nameCol = document.getElementById('map-name').value;
-            const websiteCol = document.getElementById('map-website').value;
-
-            // Only show columns that are mapped
-            const mappedColumns = [
-                { label: 'Phone Number', csvCol: phoneCol },
-                { label: 'Business Name', csvCol: businessCol },
-                { label: 'Contact Name', csvCol: nameCol },
-                { label: 'Website', csvCol: websiteCol }
-            ].filter(col => col.csvCol); // Only include if a CSV column is selected
-
-            let html = '<table style="width: 100%; border-collapse: collapse;"><thead><tr>';
-            mappedColumns.forEach(col => {
-                html += `<th style="padding: 10px; border-bottom: 2px solid #667eea; text-align: left; background: #f8f9fa; font-weight: 600;">${col.label}</th>`;
-            });
-            html += '</tr></thead><tbody>';
-
-            previewData.forEach(row => {
-                html += '<tr>';
-                mappedColumns.forEach(col => {
-                    const value = row[col.csvCol] || '<em style="color: #999;">empty</em>';
-                    html += `<td style="padding: 10px; border-bottom: 1px solid #e5e7eb;">${value}</td>`;
-                });
-                html += '</tr>';
-            });
-
-            html += '</tbody></table>';
-
-            if (mappedColumns.length === 0) {
-                html = '<p style="color: #999; text-align: center; padding: 20px;">Select columns above to see preview</p>';
-            }
-
-            preview.innerHTML = html;
-        }
-
-        importContactsBtn.addEventListener('click', () => {
-            const phoneCol = document.getElementById('map-phone').value;
-            const businessCol = document.getElementById('map-business').value;
-            const nameCol = document.getElementById('map-name').value;
-            const websiteCol = document.getElementById('map-website').value;
-
-            if (!phoneCol) {
-                showToast('Please select a phone number column', 'error');
-                return;
-            }
-
-            if (!businessCol) {
-                showToast('Please select a business name column', 'error');
-                return;
-            }
-
-            let imported = 0;
-            let skipped = 0;
-
-            csvData.forEach(row => {
-                const phone = row[phoneCol];
-                const business = row[businessCol];
-                const name = nameCol ? row[nameCol] : '';
-                const website = websiteCol ? row[websiteCol] : '';
-
-                if (!phone || !business) {
-                    skipped++;
-                    return;
-                }
-
-                // Check if contact already exists
-                const existing = ContactManager.findByPhone(phone);
-                if (existing) {
-                    skipped++;
-                    return;
-                }
-
-                // Only import the fields we care about - no customFields
-                ContactManager.add({
-                    phone: phone,
-                    business: business,
-                    name: name,
-                    website: website
-                });
-
-                imported++;
-            });
-
-            showToast(`Imported ${imported} contacts, skipped ${skipped} duplicates`, 'success');
-
-            // Reset
-            csvFileInput.value = '';
-            mappingSection.classList.add('hidden');
-            csvData = null;
-            csvHeaders = [];
-            parseCsvBtn.disabled = true;
-            parseCsvBtn.style.opacity = '0.5';
-
-            updateContactCount();
-            updateCallList();
-            updatePhoneAutocomplete();
-        });
-
-        cancelImportBtn.addEventListener('click', () => {
-            csvFileInput.value = '';
-            mappingSection.classList.add('hidden');
-            csvData = null;
-            csvHeaders = [];
-            parseCsvBtn.disabled = true;
-            parseCsvBtn.style.opacity = '0.5';
-        });
-
-        function updateContactCount() {
-            const count = ContactManager.getAll().length;
-            document.getElementById('contact-count').textContent = `${count} contacts in database`;
-        }
-
-        // ===== CALL LIST =====
-
-        const stageFilterSelect = document.getElementById('stage-filter');
-        stageFilterSelect.addEventListener('change', updateCallList);
-
-        function updateCallList() {
-            const container = document.getElementById('call-list-container');
-            const filter = stageFilterSelect.value;
-
-            let contacts = ContactManager.getAll();
-
-            // Apply filter
-            if (filter === 'active') {
-                contacts = contacts.filter(c => c.stage !== 'dead');
-            } else if (filter !== 'all') {
-                contacts = contacts.filter(c => c.stage === filter);
-            }
-
-            // Sort by stage priority, then by last called
-            const stagePriority = { cold: 1, warm: 2, demo: 3, closed: 4, dead: 5 };
-            contacts.sort((a, b) => {
-                const priorityDiff = stagePriority[a.stage] - stagePriority[b.stage];
-                if (priorityDiff !== 0) return priorityDiff;
-
-                if (!a.lastCalled) return -1;
-                if (!b.lastCalled) return 1;
-                return new Date(a.lastCalled) - new Date(b.lastCalled);
-            });
-
-            if (contacts.length === 0) {
-                container.innerHTML = '<div class="empty-state"><p>No contacts found. Import contacts from the Import tab.</p></div>';
-                return;
-            }
-
-            container.innerHTML = contacts.map(contact => {
-                const lastCalledText = contact.lastCalled
-                    ? `Last called: ${new Date(contact.lastCalled).toLocaleDateString()}`
-                    : 'Never called';
-
-                return `
-                    <div class="contact-item">
-                        <div class="contact-header">
-                            <div class="contact-info">
-                                <div class="contact-phone editable" data-contact-id="${contact.id}" data-field="phone">${formatPhone(contact.phone)}</div>
-                                <div class="contact-business editable" data-contact-id="${contact.id}" data-field="business">${contact.business || 'No business name'}</div>
-                                ${contact.name ? `<div class="contact-name editable" data-contact-id="${contact.id}" data-field="name">${contact.name}</div>` : ''}
-                                ${contact.website ? `<div class="contact-name editable" data-contact-id="${contact.id}" data-field="website" style="color: #667eea; font-size: 0.85em;">${contact.website}</div>` : ''}
-                            </div>
-                            <div>
-                                <span class="stage-badge ${contact.stage}">${contact.stage}</span>
-                            </div>
-                        </div>
-                        <div class="contact-meta">
-                            ${lastCalledText} • ${contact.callCount} call${contact.callCount !== 1 ? 's' : ''}
-                        </div>
-                        <div class="contact-actions">
-                            <button class="btn-small log-call-btn" data-contact-id="${contact.id}">Log Call</button>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-
-            // Add event listeners for inline editing
-            document.querySelectorAll('.editable').forEach(el => {
-                el.addEventListener('click', handleInlineEdit);
-            });
-
-            // Add event listeners for log call buttons
-            document.querySelectorAll('.log-call-btn').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const contactId = e.target.dataset.contactId;
-                    prefillCallForm(contactId);
-                });
-            });
-        }
-
-        function handleInlineEdit(e) {
-            const el = e.target;
-            if (el.classList.contains('editing')) return;
-
-            const contactId = el.dataset.contactId;
-            const field = el.dataset.field;
-            const currentValue = field === 'phone' ? normalizePhone(el.textContent) : el.textContent;
-
-            const input = document.createElement('input');
-            input.type = 'text';
-            input.className = 'edit-input';
-            input.value = currentValue === 'No business name' || currentValue === 'No contact name' ? '' : currentValue;
-
-            el.classList.add('editing');
-            el.textContent = '';
-            el.appendChild(input);
-            input.focus();
-            input.select();
-
-            const saveEdit = () => {
-                const newValue = input.value.trim();
-                ContactManager.update(contactId, { [field]: newValue });
-
-                el.classList.remove('editing');
-                if (field === 'phone') {
-                    el.textContent = formatPhone(newValue);
-                } else if (field === 'business') {
-                    el.textContent = newValue || 'No business name';
-                } else {
-                    el.textContent = newValue;
-                }
-
-                updatePhoneAutocomplete();
-                showToast('Contact updated', 'success');
-            };
-
-            input.addEventListener('blur', saveEdit);
-            input.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    saveEdit();
-                }
-            });
-        }
-
-        function prefillCallForm(contactId) {
-            const contact = ContactManager.getAll().find(c => c.id === contactId);
-            if (!contact) return;
-
-            phoneInput.value = contact.phone;
-            businessInput.value = contact.business;
-            nameInput.value = contact.name;
-
-            // Switch to dashboard tab
-            document.querySelector('.tab-btn[data-tab="dashboard"]').click();
-
-            // Focus on outcome buttons
-            showToast('Contact pre-filled! Select outcome.', 'success');
-        }
-
-        // ===== PHONE AUTOCOMPLETE =====
-
-        function updatePhoneAutocomplete() {
-            const datalist = document.getElementById('phone-datalist');
-            if (!datalist) {
-                const newDatalist = document.createElement('datalist');
-                newDatalist.id = 'phone-datalist';
-                document.body.appendChild(newDatalist);
-                phoneInput.setAttribute('list', 'phone-datalist');
-            }
-
-            const list = document.getElementById('phone-datalist');
-            const contacts = ContactManager.getAll();
-
-            list.innerHTML = contacts.map(c => {
-                const label = `${formatPhone(c.phone)} - ${c.business}${c.name ? ' (' + c.name + ')' : ''}`;
-                return `<option value="${c.phone}" label="${label}">`;
-            }).join('');
-        }
-
-        phoneInput.addEventListener('input', (e) => {
-            const phone = e.target.value;
-            const contact = ContactManager.findByPhone(phone);
-
-            if (contact) {
-                businessInput.value = contact.business;
-                nameInput.value = contact.name;
-            }
-        });
-
-        // ===== SEARCH & HISTORY =====
-
-        const searchInput = document.getElementById('search-input');
-        const filterOutcome = document.getElementById('filter-outcome');
-        const filterDateFrom = document.getElementById('filter-date-from');
-        const filterDateTo = document.getElementById('filter-date-to');
-        const clearFiltersBtn = document.getElementById('clear-filters-btn');
-        const exportCsvBtn = document.getElementById('export-csv-btn');
-
-        let searchDebounceTimeout;
-
-        searchInput.addEventListener('input', () => {
-            clearTimeout(searchDebounceTimeout);
-            searchDebounceTimeout = setTimeout(updateHistoryResults, 300);
-        });
-
-        filterOutcome.addEventListener('change', updateHistoryResults);
-        filterDateFrom.addEventListener('change', updateHistoryResults);
-        filterDateTo.addEventListener('change', updateHistoryResults);
-
-        clearFiltersBtn.addEventListener('click', () => {
-            searchInput.value = '';
-            filterOutcome.value = '';
-            filterDateFrom.value = '';
-            filterDateTo.value = '';
-            updateHistoryResults();
-        });
-
-        exportCsvBtn.addEventListener('click', exportToCSV);
-
-        function updateHistoryResults() {
-            const query = searchInput.value.toLowerCase().trim();
-            const outcome = filterOutcome.value;
-            const dateFrom = filterDateFrom.value;
-            const dateTo = filterDateTo.value;
-
-            let logs = CallLogManager.getAll();
-
-            // Apply search
-            if (query) {
-                logs = logs.filter(log => {
-                    const phoneMatch = normalizePhone(log.phone || '').includes(normalizePhone(query));
-                    const nameMatch = (log.name || '').toLowerCase().includes(query);
-                    const businessMatch = (log.business || '').toLowerCase().includes(query);
-                    return phoneMatch || nameMatch || businessMatch;
-                });
-            }
-
-            // Apply outcome filter
-            if (outcome) {
-                logs = logs.filter(log => log.outcome === outcome);
-            }
-
-            // Apply date filters
             if (dateFrom) {
-                logs = logs.filter(log => log.timestamp.split('T')[0] >= dateFrom);
+                calls = calls.filter(c => c.timestamp.split('T')[0] >= dateFrom);
             }
 
             if (dateTo) {
-                logs = logs.filter(log => log.timestamp.split('T')[0] <= dateTo);
+                calls = calls.filter(c => c.timestamp.split('T')[0] <= dateTo);
+            }
+
+            // Get contact stages
+            if (stageFilter) {
+                const contacts = getContacts();
+                calls = calls.filter(c => {
+                    const contact = contacts.find(ct => ct.id === c.contactId);
+                    return contact && contact.stage === stageFilter;
+                });
             }
 
             // Sort by timestamp (newest first)
-            logs.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+            calls.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
 
-            renderHistoryResults(logs);
-        }
+            const container = document.getElementById('logged-results');
 
-        function renderHistoryResults(logs) {
-            const container = document.getElementById('history-results');
-
-            if (logs.length === 0) {
-                container.innerHTML = '<div class="empty-state"><p>No call history found matching your search.</p></div>';
+            if (calls.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="icon">🔍</div>
+                        <div class="text">No call history found matching your search.</div>
+                    </div>
+                `;
                 return;
             }
 
+            const contacts = getContacts();
+
             let html = `
-                <div style="margin-bottom: 15px; color: #666;">
-                    Found ${logs.length} call${logs.length !== 1 ? 's' : ''}
+                <div style="margin-bottom: 16px; color: #6b7280; font-size: 0.95em;">
+                    Found ${calls.length} call${calls.length !== 1 ? 's' : ''}
                 </div>
-                <table>
+                <table class="contacts-table">
                     <thead>
                         <tr>
                             <th>Date/Time</th>
                             <th>Phone</th>
                             <th>Business</th>
                             <th>Name</th>
+                            <th>Stage</th>
                             <th>Outcome</th>
                             <th>Text Sent</th>
                             <th>Notes</th>
@@ -1981,25 +1753,39 @@
                     <tbody>
             `;
 
-            logs.forEach(log => {
-                const datetime = new Date(log.timestamp);
+            calls.forEach(call => {
+                const datetime = new Date(call.timestamp);
                 const dateStr = datetime.toLocaleDateString();
-                const timeStr = datetime.toLocaleTimeString('en-US', {
-                    hour: 'numeric',
-                    minute: '2-digit'
-                });
+                const timeStr = datetime.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
 
-                const outcomeText = log.outcome.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
+                const contact = contacts.find(c => c.id === call.contactId);
+                const stage = contact ? contact.stage : 'unknown';
+
+                const stageEmoji = {
+                    cold: '🆕',
+                    warm: '🔥',
+                    demo: '🎯',
+                    closed: '❌'
+                };
+
+                const outcomeLabels = {
+                    voicemail: 'Voicemail',
+                    interested: 'Interested',
+                    demo_booked: 'Demo Booked',
+                    not_interested: 'Not Interested',
+                    callback: 'Callback'
+                };
 
                 html += `
                     <tr>
                         <td>${dateStr}<br><small style="color: #999;">${timeStr}</small></td>
-                        <td>${formatPhone(log.phone)}</td>
-                        <td>${log.business || '-'}</td>
-                        <td>${log.name || '-'}</td>
-                        <td>${outcomeText}</td>
-                        <td>${log.textSent ? 'Yes' : 'No'}</td>
-                        <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis;">${log.notes || '-'}</td>
+                        <td><a href="tel:${call.phone}" class="phone-link">${call.phone}</a></td>
+                        <td>${call.business || '-'}</td>
+                        <td>${call.contactName || '-'}</td>
+                        <td><span class="badge ${stage}">${stageEmoji[stage] || ''} ${stage}</span></td>
+                        <td>${outcomeLabels[call.outcome]}</td>
+                        <td style="color: ${call.textSent ? '#10b981' : '#6b7280'};">${call.textSent ? 'Yes' : 'No'}</td>
+                        <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis;" title="${call.callbackNote}">${call.callbackNote || '-'}</td>
                     </tr>
                 `;
             });
@@ -2008,359 +1794,565 @@
             container.innerHTML = html;
         }
 
+        // ===== MODAL FUNCTIONS =====
+
+        function openQuickLogModal(contactId) {
+            const contact = getContactById(contactId);
+            if (!contact) return;
+
+            currentContactId = contactId;
+            selectedOutcome = null;
+
+            document.getElementById('modal-business').textContent = contact.business;
+            document.getElementById('modal-phone').textContent = contact.phone;
+            document.getElementById('modal-text-sent').checked = false;
+            document.getElementById('callback-note-input').value = '';
+            document.getElementById('callback-note-container').classList.remove('active');
+
+            document.getElementById('modal-overlay').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeQuickLogModal() {
+            document.getElementById('modal-overlay').classList.remove('active');
+            document.body.style.overflow = 'auto';
+            currentContactId = null;
+            selectedOutcome = null;
+        }
+
+        // ===== TAB NAVIGATION =====
+
+        function switchTab(tabName) {
+            currentTab = tabName;
+
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(`${tabName}-tab`).classList.add('active');
+
+            // Render tab content
+            if (tabName === 'dashboard') {
+                updateDashboardStats();
+                updateAnalyticsChart();
+                updateTimeInsights();
+                updateRecentCalls();
+            } else if (tabName === 'call-list') {
+                callListLimit = 50; // Reset limit when switching to Call List tab
+                renderCallList();
+            } else if (tabName === 'logged') {
+                updateLoggedResults();
+            } else if (tabName === 'import') {
+                updateContactCount();
+            }
+        }
+
+        // ===== CSV IMPORT =====
+
+        function updateContactCount() {
+            const count = getContacts().length;
+            document.getElementById('contact-count').textContent = `${count} contacts in database`;
+        }
+
+        // parseCSV and importContacts functions have been replaced with
+        // importContactsFromCSV and parseCSVLine in the event handlers section
+
         function exportToCSV() {
-            const query = searchInput.value.toLowerCase().trim();
-            const outcome = filterOutcome.value;
-            const dateFrom = filterDateFrom.value;
-            const dateTo = filterDateTo.value;
+            const searchTerm = document.getElementById('logged-search').value.toLowerCase();
+            const stageFilter = document.getElementById('logged-stage-filter').value;
+            const outcomeFilter = document.getElementById('logged-outcome-filter').value;
+            const dateFrom = document.getElementById('logged-date-from').value;
+            const dateTo = document.getElementById('logged-date-to').value;
 
-            let logs = CallLogManager.getAll();
+            let calls = getCalls();
 
-            // Apply same filters as search
-            if (query) {
-                logs = logs.filter(log => {
-                    const phoneMatch = normalizePhone(log.phone || '').includes(normalizePhone(query));
-                    const nameMatch = (log.name || '').toLowerCase().includes(query);
-                    const businessMatch = (log.business || '').toLowerCase().includes(query);
-                    return phoneMatch || nameMatch || businessMatch;
-                });
+            // Apply same filters as logged view
+            if (searchTerm) {
+                calls = calls.filter(c =>
+                    c.phone.toLowerCase().includes(searchTerm) ||
+                    c.business.toLowerCase().includes(searchTerm) ||
+                    (c.contactName && c.contactName.toLowerCase().includes(searchTerm))
+                );
             }
 
-            if (outcome) {
-                logs = logs.filter(log => log.outcome === outcome);
+            if (outcomeFilter) {
+                calls = calls.filter(c => c.outcome === outcomeFilter);
             }
 
             if (dateFrom) {
-                logs = logs.filter(log => log.timestamp.split('T')[0] >= dateFrom);
+                calls = calls.filter(c => c.timestamp.split('T')[0] >= dateFrom);
             }
 
             if (dateTo) {
-                logs = logs.filter(log => log.timestamp.split('T')[0] <= dateTo);
+                calls = calls.filter(c => c.timestamp.split('T')[0] <= dateTo);
             }
 
-            if (logs.length === 0) {
+            if (stageFilter) {
+                const contacts = getContacts();
+                calls = calls.filter(c => {
+                    const contact = contacts.find(ct => ct.id === c.contactId);
+                    return contact && contact.stage === stageFilter;
+                });
+            }
+
+            if (calls.length === 0) {
                 showToast('No data to export', 'error');
                 return;
             }
 
-            // Create CSV content
-            const headers = ['Date', 'Time', 'Phone', 'Business', 'Name', 'Outcome', 'Text Sent', 'Notes'];
+            const contacts = getContacts();
+            const headers = ['Date', 'Time', 'Phone', 'Business', 'Name', 'Stage', 'Outcome', 'Text Sent', 'Notes'];
             let csv = headers.join(',') + '\n';
 
-            logs.forEach(log => {
-                const datetime = new Date(log.timestamp);
+            calls.forEach(call => {
+                const datetime = new Date(call.timestamp);
                 const dateStr = datetime.toLocaleDateString();
                 const timeStr = datetime.toLocaleTimeString();
+                const contact = contacts.find(c => c.id === call.contactId);
+                const stage = contact ? contact.stage : 'unknown';
 
                 const row = [
                     `"${dateStr}"`,
                     `"${timeStr}"`,
-                    `"${log.phone}"`,
-                    `"${log.business || ''}"`,
-                    `"${log.name || ''}"`,
-                    `"${log.outcome}"`,
-                    `"${log.textSent ? 'Yes' : 'No'}"`,
-                    `"${(log.notes || '').replace(/"/g, '""')}"`
+                    `"${call.phone}"`,
+                    `"${call.business || ''}"`,
+                    `"${call.contactName || ''}"`,
+                    `"${stage}"`,
+                    `"${call.outcome}"`,
+                    `"${call.textSent ? 'Yes' : 'No'}"`,
+                    `"${(call.callbackNote || '').replace(/"/g, '""')}"`
                 ];
 
                 csv += row.join(',') + '\n';
             });
 
-            // Download CSV
             const blob = new Blob([csv], { type: 'text/csv' });
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `call-history-${new Date().toISOString().split('T')[0]}.csv`;
+            a.download = `focus-flow-export-${new Date().toISOString().split('T')[0]}.csv`;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
             window.URL.revokeObjectURL(url);
 
-            showToast(`Exported ${logs.length} calls to CSV`, 'success');
+            showToast(`Exported ${calls.length} calls to CSV`, 'success');
         }
 
-        // ===== CHARTS & ANALYTICS =====
+        // ===== TOAST NOTIFICATIONS =====
 
-        let currentChartPeriod = 7;
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
 
-        const chartToggleButtons = document.querySelectorAll('.chart-toggle-btn');
-        chartToggleButtons.forEach(btn => {
-            btn.addEventListener('click', () => {
-                chartToggleButtons.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                currentChartPeriod = btn.dataset.period;
-                updateCallsPerDayChart();
-            });
-        });
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
 
-        function updateCallsPerDayChart() {
-            const container = document.getElementById('calls-per-day-chart');
-            const logs = CallLogManager.getAll();
+        // ===== EVENT LISTENERS =====
 
-            if (logs.length === 0) {
-                container.innerHTML = '<div style="text-align: center; padding: 40px; color: #999;">No call data yet</div>';
-                return;
-            }
-
-            let chartData;
-            let maxCalls;
-
-            if (currentChartPeriod === 'all') {
-                // Group by month for all time view
-                chartData = getMonthCounts(logs);
-                maxCalls = Math.max(...Object.values(chartData));
-            } else {
-                // Group by day for 7/30 day views
-                const days = parseInt(currentChartPeriod);
-                const dailyCounts = getDailyCounts(logs, days);
-                const dates = Object.keys(dailyCounts).sort().slice(-days);
-                chartData = {};
-                dates.forEach(date => {
-                    chartData[date] = dailyCounts[date];
+        document.addEventListener('DOMContentLoaded', () => {
+            // Tab navigation
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    switchTab(e.target.dataset.tab);
                 });
-                maxCalls = Math.max(...Object.values(chartData));
-            }
-
-            let html = '<div class="bar-chart">';
-
-            Object.entries(chartData).forEach(([key, count]) => {
-                const height = maxCalls > 0 ? (count / maxCalls * 100) : 0;
-
-                let label;
-                if (currentChartPeriod === 'all') {
-                    // key is "2026-01" format
-                    const [year, month] = key.split('-');
-                    const date = new Date(year, month - 1);
-                    label = date.toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
-                } else {
-                    // key is "2026-01-05" format
-                    const dateObj = new Date(key);
-                    label = dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-                }
-
-                html += `
-                    <div class="bar-chart-item">
-                        <div class="bar" style="height: ${height}%;">
-                            ${count > 0 ? `<div class="bar-value">${count}</div>` : ''}
-                        </div>
-                        <div class="bar-label">${label}</div>
-                    </div>
-                `;
             });
 
-            html += '</div>';
-            container.innerHTML = html;
-        }
+            // Period toggle buttons
+            document.querySelectorAll('.period-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const days = e.target.dataset.days;
+                    currentChartPeriod = days;
 
-        function getMonthCounts(logs) {
-            const counts = {};
+                    document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
+                    e.target.classList.add('active');
 
-            logs.forEach(log => {
-                const date = new Date(log.timestamp);
-                const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
-                counts[monthKey] = (counts[monthKey] || 0) + 1;
+                    updateAnalyticsChart();
+                });
             });
 
-            // Sort by month
-            const sorted = {};
-            Object.keys(counts).sort().forEach(key => {
-                sorted[key] = counts[key];
+            // Call List search and filter (with debouncing for performance)
+            let callListSearchTimeout;
+            document.getElementById('call-list-search').addEventListener('input', () => {
+                clearTimeout(callListSearchTimeout);
+                callListSearchTimeout = setTimeout(() => {
+                    callListLimit = 50; // Reset limit when search changes
+                    renderCallList();
+                }, 300);
             });
 
-            return sorted;
-        }
+            document.getElementById('call-list-filter').addEventListener('change', () => {
+                callListLimit = 50; // Reset limit when filter changes
+                renderCallList();
+            });
 
-        function getDailyCounts(logs, days) {
-            const counts = {};
-            const now = new Date();
+            // Show More button
+            document.getElementById('show-more-btn').addEventListener('click', () => {
+                callListLimit += 50;
+                renderCallList();
+            });
 
-            // Initialize all days with 0
-            for (let i = 0; i < days; i++) {
-                const date = new Date(now);
-                date.setDate(date.getDate() - i);
-                const dateKey = date.toISOString().split('T')[0];
-                counts[dateKey] = 0;
-            }
+            // Modal close
+            document.getElementById('modal-close').addEventListener('click', closeQuickLogModal);
 
-            // Count calls per day
-            logs.forEach(log => {
-                const dateKey = log.timestamp.split('T')[0];
-                if (counts.hasOwnProperty(dateKey)) {
-                    counts[dateKey]++;
+            document.getElementById('modal-overlay').addEventListener('click', (e) => {
+                if (e.target === e.currentTarget) {
+                    closeQuickLogModal();
                 }
             });
 
-            return counts;
-        }
-
-        function updateConversionFunnelChart() {
-            const container = document.getElementById('conversion-funnel-chart');
-            const contacts = ContactManager.getAll();
-
-            // Count by stage
-            const stageCounts = {
-                cold: contacts.filter(c => c.stage === 'cold').length,
-                warm: contacts.filter(c => c.stage === 'warm').length,
-                demo: contacts.filter(c => c.stage === 'demo').length,
-                closed: contacts.filter(c => c.stage === 'closed').length
-            };
-
-            const total = contacts.filter(c => c.stage !== 'dead').length;
-
-            if (total === 0) {
-                container.innerHTML = '<div style="text-align: center; padding: 40px; color: #999;">Import contacts to see funnel</div>';
-                return;
-            }
-
-            const maxCount = Math.max(...Object.values(stageCounts));
-
-            const stages = [
-                { name: 'Cold', key: 'cold', color: '#4338ca' },
-                { name: 'Warm Lead', key: 'warm', color: '#d97706' },
-                { name: 'Demo Booked', key: 'demo', color: '#1e40af' },
-                { name: 'Closed', key: 'closed', color: '#059669' }
-            ];
-
-            let html = '<div class="funnel-chart">';
-
-            stages.forEach(stage => {
-                const count = stageCounts[stage.key];
-                const percentage = total > 0 ? Math.round((count / total) * 100) : 0;
-                const width = maxCount > 0 ? (count / maxCount * 100) : 0;
-
-                html += `
-                    <div class="funnel-item">
-                        <div class="funnel-label">${stage.name}</div>
-                        <div class="funnel-bar" style="width: ${width}%; background: ${stage.color};">
-                            ${count}
-                        </div>
-                        <div class="funnel-percentage">${percentage}%</div>
-                    </div>
-                `;
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && document.getElementById('modal-overlay').classList.contains('active')) {
+                    closeQuickLogModal();
+                }
             });
 
-            html += '</div>';
-            container.innerHTML = html;
-        }
+            // Modal outcome buttons
+            document.querySelectorAll('.outcome-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const outcome = e.currentTarget.dataset.outcome;
+                    selectedOutcome = outcome;
 
-        function updateTimePatterns() {
-            const container = document.getElementById('time-patterns');
-            const todaysLogs = CallLogManager.getTodaysLogs();
+                    if (outcome === 'callback') {
+                        document.getElementById('callback-note-container').classList.add('active');
+                        document.getElementById('callback-note-input').focus();
+                    } else {
+                        const textSent = document.getElementById('modal-text-sent').checked;
+                        logCall(currentContactId, outcome, '', textSent);
+                    }
+                });
+            });
 
-            if (todaysLogs.length === 0) {
-                container.innerHTML = '<div style="text-align: center; padding: 20px; color: #999;">No calls logged today</div>';
-                return;
+            // Callback note - log on Enter
+            document.getElementById('callback-note-input').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter' && selectedOutcome === 'callback') {
+                    const callbackNote = e.target.value;
+                    const textSent = document.getElementById('modal-text-sent').checked;
+                    logCall(currentContactId, selectedOutcome, callbackNote, textSent);
+                }
+            });
+
+            // Keyboard shortcuts for outcomes (1-5)
+            document.addEventListener('keydown', (e) => {
+                if (!document.getElementById('modal-overlay').classList.contains('active')) return;
+                if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
+                const outcomeMap = {
+                    '1': 'voicemail',
+                    '2': 'interested',
+                    '3': 'demo_booked',
+                    '4': 'not_interested',
+                    '5': 'callback'
+                };
+
+                if (outcomeMap[e.key]) {
+                    e.preventDefault();
+                    const outcome = outcomeMap[e.key];
+
+                    if (outcome === 'callback') {
+                        document.getElementById('callback-note-container').classList.add('active');
+                        document.getElementById('callback-note-input').focus();
+                    } else {
+                        const textSent = document.getElementById('modal-text-sent').checked;
+                        logCall(currentContactId, outcome, '', textSent);
+                    }
+                }
+            });
+
+            // CSV Import - FIXED VERSION with drag-and-drop
+            const dropZone = document.getElementById('upload-zone');
+            const fileInput = document.getElementById('csv-file-input');
+
+            if (!dropZone || !fileInput) {
+                console.error('CSV elements not found in DOM');
             }
 
-            // Group by 30-minute buckets
-            const timeBuckets = {};
+            // Drag and drop handlers
+            dropZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                dropZone.style.borderColor = '#667eea';
+                dropZone.style.backgroundColor = '#e0e7ff';
+            });
 
-            todaysLogs.forEach(log => {
-                const bucket = getTimeBucket(log.timestamp);
-                if (!timeBuckets[bucket]) {
-                    timeBuckets[bucket] = {
-                        total: 0,
-                        outcomes: {}
+            dropZone.addEventListener('dragleave', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                dropZone.style.borderColor = '#667eea';
+                dropZone.style.backgroundColor = '#f8f9fa';
+            });
+
+            dropZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                dropZone.style.borderColor = '#667eea';
+                dropZone.style.backgroundColor = '#f8f9fa';
+
+                const file = e.dataTransfer.files[0];
+                if (file) {
+                    handleFileUpload(file);
+                }
+            });
+
+            dropZone.addEventListener('click', () => {
+                fileInput.click();
+            });
+
+            fileInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    handleFileUpload(file);
+                }
+                e.target.value = ''; // Reset file input
+            });
+
+            function handleFileUpload(file) {
+                console.log('Starting file upload:', file.name);
+
+                if (!file.name.toLowerCase().endsWith('.csv')) {
+                    showImportError('Please upload a .csv file');
+                    return;
+                }
+
+                // Show loading state
+                dropZone.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: #667eea;">
+                        <div style="font-size: 48px; margin-bottom: 16px;">⏳</div>
+                        <div style="font-size: 18px; font-weight: 600;">Processing CSV...</div>
+                    </div>
+                `;
+
+                const reader = new FileReader();
+
+                reader.onload = function(e) {
+                    try {
+                        const csvContent = e.target.result;
+                        console.log('CSV loaded, length:', csvContent.length);
+
+                        const result = importContactsFromCSV(csvContent);
+                        console.log('Import complete:', result);
+
+                        showImportSuccess(result.added, result.skipped);
+                        updateContactCount();
+
+                        // Refresh Call List if on that tab
+                        if (currentTab === 'call-list') {
+                            renderCallList();
+                        }
+
+                    } catch (error) {
+                        console.error('Import failed:', error);
+                        showImportError(error.message);
+                    }
+                };
+
+                reader.onerror = function() {
+                    console.error('FileReader error');
+                    showImportError('Could not read file. Please try again.');
+                };
+
+                reader.readAsText(file);
+            }
+
+            function importContactsFromCSV(csvContent) {
+                // Split by newlines and filter empty lines
+                const lines = csvContent.split(/\r?\n/).filter(line => line.trim());
+
+                if (lines.length < 2) {
+                    throw new Error('CSV file is empty or has no data rows');
+                }
+
+                // Parse header row
+                const headerLine = lines[0];
+                const headers = parseCSVLine(headerLine).map(h => h.trim().toLowerCase());
+
+                console.log('CSV Headers:', headers);
+
+                // Find column indices
+                const phoneIndex = headers.findIndex(h => h === 'phone' || h === 'phone number');
+                const businessIndex = headers.findIndex(h => h === 'business' || h === 'company' || h === 'business name' || h === 'name');
+                const websiteIndex = headers.findIndex(h => h === 'website' || h === 'url');
+                const nameIndex = headers.findIndex(h => h === 'contact' || h === 'contactname' || h === 'contact name');
+
+                console.log('Column indices:', { phoneIndex, businessIndex, websiteIndex, nameIndex });
+
+                if (phoneIndex === -1 || businessIndex === -1) {
+                    throw new Error('CSV must include "phone" and "business" columns. Found columns: ' + headers.join(', '));
+                }
+
+                // Get existing contacts
+                const existingContacts = getContacts();
+                const existingPhones = new Set(existingContacts.map(c => c.phone.replace(/\D/g, '')));
+
+                let added = 0;
+                let skipped = 0;
+
+                // Process each data row
+                for (let i = 1; i < lines.length; i++) {
+                    const line = lines[i].trim();
+                    if (!line) continue;
+
+                    const values = parseCSVLine(line);
+
+                    const phone = values[phoneIndex]?.trim();
+                    const business = values[businessIndex]?.trim();
+                    const website = websiteIndex !== -1 ? values[websiteIndex]?.trim() : '';
+                    const contactName = nameIndex !== -1 ? values[nameIndex]?.trim() : '';
+
+                    if (!phone || !business) {
+                        console.log(`Row ${i + 1}: Skipping - missing phone or business`);
+                        skipped++;
+                        continue;
+                    }
+
+                    // Format phone number
+                    let formattedPhone = phone.replace(/\D/g, '');
+
+                    if (formattedPhone.length === 10) {
+                        formattedPhone = '+1-' + formattedPhone.slice(0, 3) + '-' + formattedPhone.slice(3, 6) + '-' + formattedPhone.slice(6);
+                    } else if (formattedPhone.length === 11 && formattedPhone.startsWith('1')) {
+                        formattedPhone = '+' + formattedPhone.slice(0, 1) + '-' + formattedPhone.slice(1, 4) + '-' + formattedPhone.slice(4, 7) + '-' + formattedPhone.slice(7);
+                    } else {
+                        console.log(`Row ${i + 1}: Skipping - invalid phone format: ${phone}`);
+                        skipped++;
+                        continue;
+                    }
+
+                    // Check for duplicate
+                    const phoneDigits = formattedPhone.replace(/\D/g, '');
+                    if (existingPhones.has(phoneDigits)) {
+                        console.log(`Row ${i + 1}: Skipping duplicate - ${formattedPhone}`);
+                        skipped++;
+                        continue;
+                    }
+
+                    // Create new contact
+                    const newContact = {
+                        id: generateUUID(),
+                        phone: formattedPhone,
+                        business: business,
+                        website: website || '',
+                        contactName: contactName || '',
+                        stage: 'cold',
+                        callCount: 0,
+                        lastCalled: null,
+                        lastOutcome: null,
+                        callbackNote: '',
+                        createdAt: new Date().toISOString()
                     };
+
+                    existingContacts.push(newContact);
+                    existingPhones.add(phoneDigits);
+                    added++;
+
+                    console.log(`Row ${i + 1}: Added - ${business} (${formattedPhone})`);
                 }
-                timeBuckets[bucket].total++;
-                timeBuckets[bucket].outcomes[log.outcome] = (timeBuckets[bucket].outcomes[log.outcome] || 0) + 1;
-            });
 
-            // Sort by time
-            const sortedBuckets = Object.keys(timeBuckets).sort();
+                // Save all contacts
+                saveContacts(existingContacts);
+                console.log('Saved to localStorage:', existingContacts.length, 'total contacts');
 
-            let html = '';
+                return { added, skipped };
+            }
 
-            sortedBuckets.forEach(bucket => {
-                const data = timeBuckets[bucket];
+            function parseCSVLine(line) {
+                const result = [];
+                let current = '';
+                let inQuotes = false;
 
-                // Create outcome summary
-                const outcomeSummary = Object.entries(data.outcomes)
-                    .map(([outcome, count]) => {
-                        const name = outcome === 'voicemail' ? 'VM' :
-                                    outcome === 'interested' ? 'Interested' :
-                                    outcome === 'not_interested' ? 'Not Interested' :
-                                    'Callback';
-                        return `${count} ${name}`;
-                    })
-                    .join(', ');
+                for (let i = 0; i < line.length; i++) {
+                    const char = line[i];
 
-                html += `
-                    <div class="time-pattern-item">
-                        <div class="time-pattern-header">${bucket}: ${data.total} call${data.total !== 1 ? 's' : ''}</div>
-                        <div class="time-pattern-details">${outcomeSummary}</div>
-                    </div>
-                `;
-            });
-
-            container.innerHTML = html;
-        }
-
-        function getTimeBucket(timestamp) {
-            const date = new Date(timestamp);
-            const hour = date.getHours();
-            const minute = Math.floor(date.getMinutes() / 30) * 30;
-            const endMinute = minute + 30;
-
-            const formatTime = (h, m) => {
-                const period = h >= 12 ? 'PM' : 'AM';
-                const hour12 = h % 12 || 12;
-                return `${hour12}:${String(m).padStart(2, '0')} ${period}`;
-            };
-
-            return `${formatTime(hour, minute)} - ${formatTime(hour + Math.floor(endMinute / 60), endMinute % 60)}`;
-        }
-
-        // ===== LOCALSTORAGE MONITORING =====
-
-        function checkLocalStorageCapacity() {
-            try {
-                const total = 5 * 1024 * 1024; // Approximate 5MB limit
-                let used = 0;
-
-                for (let key in localStorage) {
-                    if (localStorage.hasOwnProperty(key)) {
-                        used += localStorage[key].length + key.length;
+                    if (char === '"') {
+                        inQuotes = !inQuotes;
+                    } else if (char === ',' && !inQuotes) {
+                        result.push(current);
+                        current = '';
+                    } else {
+                        current += char;
                     }
                 }
 
-                const percentUsed = (used / total) * 100;
-
-                if (percentUsed > 80) {
-                    showToast('Storage is ' + Math.round(percentUsed) + '% full. Consider exporting and clearing old data.', 'error');
-                }
-            } catch (e) {
-                console.error('Error checking storage:', e);
+                result.push(current);
+                return result.map(s => s.replace(/^"|"$/g, '').trim());
             }
-        }
 
-        // ===== INITIALIZATION =====
+            function showImportSuccess(added, skipped) {
+                dropZone.innerHTML = `
+                    <div style="text-align: center; padding: 40px;">
+                        <div style="font-size: 48px; margin-bottom: 16px; color: #10b981;">✅</div>
+                        <div style="font-size: 20px; font-weight: 600; color: #1f2937; margin-bottom: 8px;">Import Complete!</div>
+                        <div style="font-size: 16px; color: #6b7280; margin-bottom: 24px;">
+                            Added: <strong>${added}</strong> contacts<br>
+                            Skipped (duplicates): <strong>${skipped}</strong> contacts
+                        </div>
+                        <button onclick="switchTab('call-list')" style="background: #667eea; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                            View Call List
+                        </button>
+                        <button onclick="window.resetDropZone()" style="background: white; color: #667eea; border: 2px solid #667eea; padding: 12px 24px; border-radius: 8px; font-weight: 600; cursor: pointer; margin-left: 12px;">
+                            Import More
+                        </button>
+                    </div>
+                `;
+            }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            updateStats();
-            updateRecentCalls();
-            updateContactCount();
-            updateCallList();
-            updatePhoneAutocomplete();
-            updateHistoryResults();
-            updateCallsPerDayChart();
-            updateConversionFunnelChart();
-            updateTimePatterns();
-            checkLocalStorageCapacity();
+            function showImportError(message) {
+                dropZone.innerHTML = `
+                    <div style="text-align: center; padding: 40px;">
+                        <div style="font-size: 48px; margin-bottom: 16px; color: #ef4444;">❌</div>
+                        <div style="font-size: 20px; font-weight: 600; color: #1f2937; margin-bottom: 8px;">Import Failed</div>
+                        <div style="font-size: 16px; color: #6b7280; margin-bottom: 24px;">
+                            ${message}
+                        </div>
+                        <button onclick="window.resetDropZone()" style="background: #667eea; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                            Try Again
+                        </button>
+                    </div>
+                `;
+            }
 
-            // Check storage capacity every 50 calls
-            let callCount = 0;
-            const originalAdd = CallLogManager.add;
-            CallLogManager.add = function(log) {
-                const result = originalAdd.call(this, log);
-                callCount++;
-                if (callCount % 50 === 0) {
-                    checkLocalStorageCapacity();
-                }
-                return result;
+            window.resetDropZone = function() {
+                dropZone.innerHTML = `
+                    <div class="icon">📤</div>
+                    <div class="text">Drag and drop CSV file here, or click to browse</div>
+                    <input type="file" id="csv-file-input" accept=".csv" style="display: none;">
+                `;
+                // Re-attach file input listener
+                const newFileInput = document.getElementById('csv-file-input');
+                newFileInput.addEventListener('change', (e) => {
+                    const file = e.target.files[0];
+                    if (file) {
+                        handleFileUpload(file);
+                    }
+                    e.target.value = '';
+                });
             };
+
+            // Logged tab filters
+            let searchTimeout;
+            document.getElementById('logged-search').addEventListener('input', () => {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(updateLoggedResults, 300);
+            });
+
+            document.getElementById('logged-stage-filter').addEventListener('change', updateLoggedResults);
+            document.getElementById('logged-outcome-filter').addEventListener('change', updateLoggedResults);
+            document.getElementById('logged-date-from').addEventListener('change', updateLoggedResults);
+            document.getElementById('logged-date-to').addEventListener('change', updateLoggedResults);
+
+            // Export CSV button
+            document.getElementById('export-csv-btn').addEventListener('click', exportToCSV);
+
+            // Initialize
+            switchTab('dashboard');
         });
     </script>
 </body>
