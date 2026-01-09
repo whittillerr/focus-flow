@@ -1664,10 +1664,13 @@
                                         </a>
                                     </div>
                                 ` : ''}
-                                <div style="margin-top: 4px;">
-                                    <span class="badge" style="background: ${outcomeColors[call.outcome]}20; color: ${outcomeColors[call.outcome]}; border-color: ${outcomeColors[call.outcome]}40;">
-                                        ${outcomeLabels[call.outcome]}
+                                <div style="margin-top: 4px; display: flex; align-items: center; gap: 8px;">
+                                    <span class="badge" style="background: ${outcomeColors[call.outcome] || '#6b7280'}20; color: ${outcomeColors[call.outcome] || '#6b7280'}; border-color: ${outcomeColors[call.outcome] || '#6b7280'}40;">
+                                        ${outcomeLabels[call.outcome] || call.outcome || 'Unknown'}
                                     </span>
+                                    <button onclick="editCallOutcome('${call.id}')" style="background: none; border: none; cursor: pointer; color: #667eea; font-size: 0.9em; padding: 4px 8px; border-radius: 4px; transition: background 0.2s;" onmouseover="this.style.background='#f3f4f6'" onmouseout="this.style.background='none'" title="Edit outcome">
+                                        ✏️ Edit
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -1676,6 +1679,133 @@
                 `;
             }).join('');
         }
+
+        function editCallOutcome(callId) {
+            const calls = getCalls();
+            const call = calls.find(c => c.id === callId);
+            if (!call) {
+                showToast('Call not found', 'error');
+                return;
+            }
+
+            const outcomeLabels = {
+                voicemail: 'Voicemail',
+                interested: 'Interested',
+                demo_booked: 'Demo Booked',
+                not_interested: 'Not Interested',
+                callback: 'Callback'
+            };
+
+            const currentOutcome = outcomeLabels[call.outcome] || 'Unknown';
+
+            // Create modal overlay
+            const overlay = document.createElement('div');
+            overlay.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 9999; display: flex; align-items: center; justify-content: center;';
+
+            // Create modal
+            const modal = document.createElement('div');
+            modal.style.cssText = 'background: white; border-radius: 16px; padding: 32px; max-width: 500px; width: 90%;';
+
+            modal.innerHTML = `
+                <h3 style="margin: 0 0 16px 0; font-size: 1.5em; color: #1f2937;">Edit Call Outcome</h3>
+                <p style="margin: 0 0 24px 0; color: #6b7280;">Current: <strong>${currentOutcome}</strong></p>
+                <div style="display: flex; flex-direction: column; gap: 12px;">
+                    <button class="outcome-edit-btn" data-outcome="voicemail" style="padding: 16px; border: 2px solid #3b82f6; background: white; color: #3b82f6; border-radius: 8px; font-size: 1em; font-weight: 600; cursor: pointer; transition: all 0.2s;">
+                        📞 Voicemail
+                    </button>
+                    <button class="outcome-edit-btn" data-outcome="interested" style="padding: 16px; border: 2px solid #10b981; background: white; color: #10b981; border-radius: 8px; font-size: 1em; font-weight: 600; cursor: pointer; transition: all 0.2s;">
+                        ⭐ Interested
+                    </button>
+                    <button class="outcome-edit-btn" data-outcome="demo_booked" style="padding: 16px; border: 2px solid #8b5cf6; background: white; color: #8b5cf6; border-radius: 8px; font-size: 1em; font-weight: 600; cursor: pointer; transition: all 0.2s;">
+                        🎯 Demo Booked
+                    </button>
+                    <button class="outcome-edit-btn" data-outcome="not_interested" style="padding: 16px; border: 2px solid #ef4444; background: white; color: #ef4444; border-radius: 8px; font-size: 1em; font-weight: 600; cursor: pointer; transition: all 0.2s;">
+                        ❌ Not Interested
+                    </button>
+                    <button class="outcome-edit-btn" data-outcome="callback" style="padding: 16px; border: 2px solid #f59e0b; background: white; color: #f59e0b; border-radius: 8px; font-size: 1em; font-weight: 600; cursor: pointer; transition: all 0.2s;">
+                        🔄 Callback
+                    </button>
+                </div>
+                <button id="cancel-edit" style="margin-top: 24px; width: 100%; padding: 12px; background: #f3f4f6; border: none; border-radius: 8px; font-size: 1em; font-weight: 600; color: #6b7280; cursor: pointer;">
+                    Cancel
+                </button>
+            `;
+
+            overlay.appendChild(modal);
+            document.body.appendChild(overlay);
+
+            // Add hover effects
+            modal.querySelectorAll('.outcome-edit-btn').forEach(btn => {
+                btn.addEventListener('mouseenter', function() {
+                    const color = this.style.borderColor;
+                    this.style.background = color;
+                    this.style.color = 'white';
+                });
+                btn.addEventListener('mouseleave', function() {
+                    this.style.background = 'white';
+                    this.style.color = this.style.borderColor;
+                });
+
+                btn.addEventListener('click', function() {
+                    const newOutcome = this.dataset.outcome;
+
+                    // Update call log
+                    call.outcome = newOutcome;
+                    saveCalls(calls);
+
+                    // Update contact's last outcome and stage
+                    const contact = getContactById(call.contactId);
+                    if (contact) {
+                        const updates = {
+                            lastOutcome: newOutcome
+                        };
+
+                        // Update stage based on new outcome
+                        if (newOutcome === 'interested' || newOutcome === 'callback') {
+                            updates.stage = 'warm';
+                        } else if (newOutcome === 'demo_booked') {
+                            updates.stage = 'demo';
+                        } else if (newOutcome === 'not_interested') {
+                            updates.stage = 'closed';
+                        } else if (newOutcome === 'voicemail') {
+                            // Only set to cold if not already warm/demo/closed
+                            if (contact.stage !== 'warm' && contact.stage !== 'demo' && contact.stage !== 'closed') {
+                                updates.stage = 'cold';
+                            }
+                        }
+
+                        updateContact(call.contactId, updates);
+                    }
+
+                    // Close modal
+                    document.body.removeChild(overlay);
+
+                    // Refresh all UI
+                    updateRecentCalls();
+                    updateDashboardStats();
+                    updateAnalyticsChart();
+                    renderCallList();
+                    updateLoggedResults();
+
+                    showToast(`Call outcome updated to ${outcomeLabels[newOutcome]}!`, 'success');
+                });
+            });
+
+            // Cancel button
+            modal.querySelector('#cancel-edit').addEventListener('click', function() {
+                document.body.removeChild(overlay);
+            });
+
+            // Click outside to close
+            overlay.addEventListener('click', function(e) {
+                if (e.target === overlay) {
+                    document.body.removeChild(overlay);
+                }
+            });
+        }
+
+        // Make editCallOutcome globally accessible
+        window.editCallOutcome = editCallOutcome;
 
         function updateLoggedResults() {
             const searchTerm = document.getElementById('logged-search').value.toLowerCase();
