@@ -1534,19 +1534,16 @@
 
         function updateTimeInsights() {
             const calls = getCalls();
-            const today = new Date().toISOString().split('T')[0];
-            const todaysCalls = calls.filter(c => c.timestamp.split('T')[0] === today);
-
             const container = document.getElementById('time-insights');
 
-            if (todaysCalls.length < 10) {
-                container.textContent = 'Not enough data yet. Log 10+ calls to see insights.';
+            if (calls.length < 20) {
+                container.textContent = 'Not enough data yet. Log 20+ total calls to see insights.';
                 return;
             }
 
-            // Group by 2-hour windows
+            // Group by 2-hour windows across ALL historical calls
             const windows = {};
-            todaysCalls.forEach(call => {
+            calls.forEach(call => {
                 const hour = new Date(call.timestamp).getHours();
                 const window = Math.floor(hour / 2) * 2;
                 const windowKey = `${window}-${window + 2}`;
@@ -1565,7 +1562,7 @@
 
             // Calculate pickup rates
             const windowsWithRates = Object.entries(windows)
-                .filter(([_, data]) => data.total >= 10)
+                .filter(([_, data]) => data.total >= 5)
                 .map(([window, data]) => ({
                     window,
                     pickupRate: (data.pickups / data.total) * 100,
@@ -1576,7 +1573,7 @@
                 }));
 
             if (windowsWithRates.length === 0) {
-                container.textContent = 'Not enough data yet. Need 10+ calls in a 2-hour window.';
+                container.textContent = 'Not enough data yet. Need 5+ calls in a 2-hour window.';
                 return;
             }
 
