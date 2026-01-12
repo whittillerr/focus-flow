@@ -883,31 +883,69 @@
                 </div>
             </div>
 
-            <table class="contacts-table" id="contacts-table">
-                <thead>
-                    <tr>
-                        <th class="checkbox-cell" style="width: 50px;">☐</th>
-                        <th style="width: 140px;">Phone</th>
-                        <th style="width: 200px;">Business</th>
-                        <th style="width: 100px;">Website</th>
-                        <th style="width: 140px;">Status</th>
-                        <th style="width: 120px;">Last Called</th>
-                        <th style="width: 150px;">Notes</th>
-                    </tr>
-                </thead>
-                <tbody id="contacts-tbody">
-                    <tr>
-                        <td colspan="7">
-                            <div class="empty-state">
-                                <div class="icon">📋</div>
-                                <div class="text">No contacts to call. Import CSV to get started.</div>
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+            <!-- CALLBACKS SECTION -->
+            <div style="margin-bottom: 32px;">
+                <h3 style="color: #ef4444; font-size: 1.1em; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                    <span>🔥</span>
+                    <span>Voicemail Callbacks & Scheduled Callbacks</span>
+                </h3>
+                <table class="contacts-table" id="callbacks-table">
+                    <thead>
+                        <tr>
+                            <th class="checkbox-cell" style="width: 50px;">☐</th>
+                            <th style="width: 140px;">Phone</th>
+                            <th style="width: 200px;">Business</th>
+                            <th style="width: 100px;">Website</th>
+                            <th style="width: 140px;">Status</th>
+                            <th style="width: 120px;">Last Called</th>
+                            <th style="width: 150px;">Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody id="callbacks-tbody">
+                        <tr>
+                            <td colspan="7">
+                                <div class="empty-state">
+                                    <div class="icon">✅</div>
+                                    <div class="text">No callbacks pending</div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button class="show-more-btn hidden" id="show-more-callbacks-btn">Show More</button>
+            </div>
 
-            <button class="show-more-btn hidden" id="show-more-btn">Show More</button>
+            <!-- COLD OUTREACH SECTION -->
+            <div>
+                <h3 style="color: #667eea; font-size: 1.1em; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                    <span>📞</span>
+                    <span>Cold Outreach</span>
+                </h3>
+                <table class="contacts-table" id="cold-table">
+                    <thead>
+                        <tr>
+                            <th class="checkbox-cell" style="width: 50px;">☐</th>
+                            <th style="width: 140px;">Phone</th>
+                            <th style="width: 200px;">Business</th>
+                            <th style="width: 100px;">Website</th>
+                            <th style="width: 140px;">Status</th>
+                            <th style="width: 120px;">Last Called</th>
+                            <th style="width: 150px;">Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cold-tbody">
+                        <tr>
+                            <td colspan="7">
+                                <div class="empty-state">
+                                    <div class="icon">📋</div>
+                                    <div class="text">No cold leads. Import CSV to get started.</div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button class="show-more-btn hidden" id="show-more-cold-btn">Show More</button>
+            </div>
         </div>
 
         <!-- LOGGED TAB -->
@@ -1308,60 +1346,91 @@
             const searchTerm = document.getElementById('call-list-search').value;
             const filter = document.getElementById('call-list-filter').value;
             const result = getCallListContacts(callListLimit, filter, searchTerm);
-            const tbody = document.getElementById('contacts-tbody');
 
-            if (result.contacts.length === 0) {
-                tbody.innerHTML = `
+            // Split contacts into callbacks and cold outreach
+            const callbacks = result.contacts.filter(c => {
+                const priority = getPriorityScore(c);
+                return priority >= 80; // VM callbacks (90-100) and scheduled callbacks (80)
+            });
+
+            const coldOutreach = result.contacts.filter(c => {
+                const priority = getPriorityScore(c);
+                return priority < 80; // Fresh (70), Aged (50), Deprioritized (10)
+            });
+
+            // Render callbacks table
+            const callbacksTbody = document.getElementById('callbacks-tbody');
+            if (callbacks.length === 0) {
+                callbacksTbody.innerHTML = `
                     <tr>
                         <td colspan="7">
                             <div class="empty-state">
-                                <div class="icon">📋</div>
-                                <div class="text">No contacts found. Try adjusting your filters.</div>
+                                <div class="icon">✅</div>
+                                <div class="text">No callbacks pending</div>
                             </div>
                         </td>
                     </tr>
                 `;
-                document.getElementById('show-more-btn').classList.add('hidden');
-                return;
+                document.getElementById('show-more-callbacks-btn').classList.add('hidden');
+            } else {
+                callbacksTbody.innerHTML = callbacks.map(contact => renderContactRow(contact)).join('');
+                document.getElementById('show-more-callbacks-btn').classList.add('hidden'); // Will add pagination later if needed
             }
 
-            tbody.innerHTML = result.contacts.map(contact => {
-                const badge = getStatusBadge(contact);
-                const phone = contact.phone.length > 15 ? contact.phone.slice(0, 15) + '...' : contact.phone;
-                const business = contact.business.length > 30 ? contact.business.slice(0, 30) + '...' : contact.business;
-                const lastCalled = getRelativeTime(contact.lastCalled);
-                const notes = contact.callbackNote ? (contact.callbackNote.length > 40 ? contact.callbackNote.slice(0, 40) + '...' : contact.callbackNote) : '—';
-
-                return `
+            // Render cold outreach table
+            const coldTbody = document.getElementById('cold-tbody');
+            if (coldOutreach.length === 0) {
+                coldTbody.innerHTML = `
                     <tr>
-                        <td class="checkbox-cell">
-                            <input type="checkbox" data-contact-id="${contact.id}">
+                        <td colspan="7">
+                            <div class="empty-state">
+                                <div class="icon">📋</div>
+                                <div class="text">No cold leads. Import CSV to get started.</div>
+                            </div>
                         </td>
-                        <td><a href="tel:${contact.phone}" class="phone-link">${phone}</a></td>
-                        <td><span class="business-name" title="${contact.business}">${business}</span></td>
-                        <td>
-                            ${contact.website
-                                ? `<a href="${contact.website}" target="_blank" rel="noopener noreferrer" style="color: #667eea; text-decoration: none; display: flex; align-items: center; gap: 4px;" title="${contact.website}">
-                                    <span style="font-size: 16px;">🔗</span>
-                                    <span>Link</span>
-                                </a>`
-                                : '<span style="color: #9ca3af;">—</span>'}
-                        </td>
-                        <td><span class="badge ${badge.class}">${badge.text}</span></td>
-                        <td>${lastCalled}</td>
-                        <td title="${contact.callbackNote}">${notes}</td>
                     </tr>
                 `;
-            }).join('');
-
-            // Show "Show More" button if there are more contacts
-            if (result.total > callListLimit) {
-                document.getElementById('show-more-btn').classList.remove('hidden');
+                document.getElementById('show-more-cold-btn').classList.add('hidden');
             } else {
-                document.getElementById('show-more-btn').classList.add('hidden');
+                coldTbody.innerHTML = coldOutreach.map(contact => renderContactRow(contact)).join('');
+                document.getElementById('show-more-cold-btn').classList.add('hidden'); // Will add pagination later if needed
             }
 
-            // Attach checkbox listeners
+            // Attach checkbox listeners to both tables
+            attachCheckboxListeners(callbacksTbody);
+            attachCheckboxListeners(coldTbody);
+        }
+
+        function renderContactRow(contact) {
+            const badge = getStatusBadge(contact);
+            const phone = contact.phone.length > 15 ? contact.phone.slice(0, 15) + '...' : contact.phone;
+            const business = contact.business.length > 30 ? contact.business.slice(0, 30) + '...' : contact.business;
+            const lastCalled = getRelativeTime(contact.lastCalled);
+            const notes = contact.callbackNote ? (contact.callbackNote.length > 40 ? contact.callbackNote.slice(0, 40) + '...' : contact.callbackNote) : '—';
+
+            return `
+                <tr>
+                    <td class="checkbox-cell">
+                        <input type="checkbox" data-contact-id="${contact.id}">
+                    </td>
+                    <td><a href="tel:${contact.phone}" class="phone-link">${phone}</a></td>
+                    <td><span class="business-name" title="${contact.business}">${business}</span></td>
+                    <td>
+                        ${contact.website
+                            ? `<a href="${contact.website}" target="_blank" rel="noopener noreferrer" style="color: #667eea; text-decoration: none; display: flex; align-items: center; gap: 4px;" title="${contact.website}">
+                                <span style="font-size: 16px;">🔗</span>
+                                <span>Link</span>
+                            </a>`
+                            : '<span style="color: #9ca3af;">—</span>'}
+                    </td>
+                    <td><span class="badge ${badge.class}">${badge.text}</span></td>
+                    <td>${lastCalled}</td>
+                    <td title="${contact.callbackNote}">${notes}</td>
+                </tr>
+            `;
+        }
+
+        function attachCheckboxListeners(tbody) {
             tbody.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
                 checkbox.addEventListener('change', (e) => {
                     if (e.target.checked) {
@@ -2157,11 +2226,8 @@
                 renderCallList();
             });
 
-            // Show More button
-            document.getElementById('show-more-btn').addEventListener('click', () => {
-                callListLimit += 50;
-                renderCallList();
-            });
+            // Show More buttons (for future pagination if needed)
+            // Currently hidden - can enable pagination later
 
             // Modal close
             document.getElementById('modal-close').addEventListener('click', closeQuickLogModal);
