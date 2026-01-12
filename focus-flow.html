@@ -883,40 +883,8 @@
                 </div>
             </div>
 
-            <!-- CALLBACKS SECTION -->
-            <div style="margin-bottom: 32px;">
-                <h3 style="color: #ef4444; font-size: 1.1em; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
-                    <span>🔥</span>
-                    <span>Voicemail Callbacks & Scheduled Callbacks</span>
-                </h3>
-                <table class="contacts-table" id="callbacks-table">
-                    <thead>
-                        <tr>
-                            <th class="checkbox-cell" style="width: 50px;">☐</th>
-                            <th style="width: 140px;">Phone</th>
-                            <th style="width: 200px;">Business</th>
-                            <th style="width: 100px;">Website</th>
-                            <th style="width: 140px;">Status</th>
-                            <th style="width: 120px;">Last Called</th>
-                            <th style="width: 150px;">Notes</th>
-                        </tr>
-                    </thead>
-                    <tbody id="callbacks-tbody">
-                        <tr>
-                            <td colspan="7">
-                                <div class="empty-state">
-                                    <div class="icon">✅</div>
-                                    <div class="text">No callbacks pending</div>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-                <button class="show-more-btn hidden" id="show-more-callbacks-btn">Show More</button>
-            </div>
-
             <!-- COLD OUTREACH SECTION -->
-            <div>
+            <div style="margin-bottom: 32px;">
                 <h3 style="color: #667eea; font-size: 1.1em; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
                     <span>📞</span>
                     <span>Cold Outreach</span>
@@ -944,7 +912,39 @@
                         </tr>
                     </tbody>
                 </table>
-                <button class="show-more-btn hidden" id="show-more-cold-btn">Show More</button>
+                <button class="show-more-btn hidden" id="show-more-cold-btn">View More</button>
+            </div>
+
+            <!-- CALLBACKS SECTION -->
+            <div>
+                <h3 style="color: #ef4444; font-size: 1.1em; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                    <span>🔥</span>
+                    <span>Voicemail Callbacks & Scheduled Callbacks</span>
+                </h3>
+                <table class="contacts-table" id="callbacks-table">
+                    <thead>
+                        <tr>
+                            <th class="checkbox-cell" style="width: 50px;">☐</th>
+                            <th style="width: 140px;">Phone</th>
+                            <th style="width: 200px;">Business</th>
+                            <th style="width: 100px;">Website</th>
+                            <th style="width: 140px;">Status</th>
+                            <th style="width: 120px;">Last Called</th>
+                            <th style="width: 150px;">Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody id="callbacks-tbody">
+                        <tr>
+                            <td colspan="7">
+                                <div class="empty-state">
+                                    <div class="icon">✅</div>
+                                    <div class="text">No callbacks pending</div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button class="show-more-btn hidden" id="show-more-callbacks-btn">View More</button>
             </div>
         </div>
 
@@ -1045,6 +1045,7 @@
         let currentChartPeriod = 7;
         let currentContactId = null;
         let callListLimit = 50;
+        let coldListLimit = 10;
         let recentCallsLimit = 10;
         let selectedOutcome = null;
 
@@ -1358,7 +1359,36 @@
                 return priority < 80; // Fresh (70), Aged (50), Deprioritized (10)
             });
 
-            // Render callbacks table
+            // Render cold outreach table (with pagination - 10 at a time)
+            const coldTbody = document.getElementById('cold-tbody');
+            if (coldOutreach.length === 0) {
+                coldTbody.innerHTML = `
+                    <tr>
+                        <td colspan="7">
+                            <div class="empty-state">
+                                <div class="icon">📋</div>
+                                <div class="text">No cold leads. Import CSV to get started.</div>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                document.getElementById('show-more-cold-btn').classList.add('hidden');
+            } else {
+                const displayedCold = coldOutreach.slice(0, coldListLimit);
+                coldTbody.innerHTML = displayedCold.map(contact => renderContactRow(contact)).join('');
+
+                // Show "View More" button if there are more contacts
+                const coldBtn = document.getElementById('show-more-cold-btn');
+                if (coldOutreach.length > coldListLimit) {
+                    const remaining = coldOutreach.length - coldListLimit;
+                    coldBtn.textContent = `View More (${remaining} more)`;
+                    coldBtn.classList.remove('hidden');
+                } else {
+                    coldBtn.classList.add('hidden');
+                }
+            }
+
+            // Render callbacks table (show all)
             const callbacksTbody = document.getElementById('callbacks-tbody');
             if (callbacks.length === 0) {
                 callbacksTbody.innerHTML = `
@@ -1374,31 +1404,12 @@
                 document.getElementById('show-more-callbacks-btn').classList.add('hidden');
             } else {
                 callbacksTbody.innerHTML = callbacks.map(contact => renderContactRow(contact)).join('');
-                document.getElementById('show-more-callbacks-btn').classList.add('hidden'); // Will add pagination later if needed
-            }
-
-            // Render cold outreach table
-            const coldTbody = document.getElementById('cold-tbody');
-            if (coldOutreach.length === 0) {
-                coldTbody.innerHTML = `
-                    <tr>
-                        <td colspan="7">
-                            <div class="empty-state">
-                                <div class="icon">📋</div>
-                                <div class="text">No cold leads. Import CSV to get started.</div>
-                            </div>
-                        </td>
-                    </tr>
-                `;
-                document.getElementById('show-more-cold-btn').classList.add('hidden');
-            } else {
-                coldTbody.innerHTML = coldOutreach.map(contact => renderContactRow(contact)).join('');
-                document.getElementById('show-more-cold-btn').classList.add('hidden'); // Will add pagination later if needed
+                document.getElementById('show-more-callbacks-btn').classList.add('hidden');
             }
 
             // Attach checkbox listeners to both tables
-            attachCheckboxListeners(callbacksTbody);
             attachCheckboxListeners(coldTbody);
+            attachCheckboxListeners(callbacksTbody);
         }
 
         function renderContactRow(contact) {
@@ -2217,17 +2228,22 @@
                 clearTimeout(callListSearchTimeout);
                 callListSearchTimeout = setTimeout(() => {
                     callListLimit = 50; // Reset limit when search changes
+                    coldListLimit = 10; // Reset cold list limit
                     renderCallList();
                 }, 300);
             });
 
             document.getElementById('call-list-filter').addEventListener('change', () => {
                 callListLimit = 50; // Reset limit when filter changes
+                coldListLimit = 10; // Reset cold list limit
                 renderCallList();
             });
 
-            // Show More buttons (for future pagination if needed)
-            // Currently hidden - can enable pagination later
+            // View More button for Cold Outreach
+            document.getElementById('show-more-cold-btn').addEventListener('click', () => {
+                coldListLimit += 10;
+                renderCallList();
+            });
 
             // Modal close
             document.getElementById('modal-close').addEventListener('click', closeQuickLogModal);
