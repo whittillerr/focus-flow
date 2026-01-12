@@ -1156,6 +1156,15 @@
         }
 
         function getStatusBadge(contact) {
+            // Check stage first - warm/demo contacts should always show their stage
+            if (contact.stage === 'warm') {
+                return { class: 'warm', text: '🔥 Warm' };
+            }
+            if (contact.stage === 'demo') {
+                return { class: 'demo', text: '🎯 Demo' };
+            }
+
+            // For cold contacts, show priority-based badges
             const daysSince = getDaysSinceLastCall(contact);
             const priority = getPriorityScore(contact);
 
@@ -1173,8 +1182,6 @@
                 return { class: 'cold', text: '📋 Cold' };
             } else if (priority === 10) {
                 return { class: 'deprioritized', text: '⬇️ Cold' };
-            } else if (contact.stage === 'warm') {
-                return { class: 'warm', text: '🔥 Warm' };
             }
 
             return { class: 'cold', text: 'Cold' };
@@ -1898,6 +1905,7 @@
                             <th>Outcome</th>
                             <th>Text Sent</th>
                             <th>Notes</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -1936,6 +1944,11 @@
                         <td>${outcomeLabels[call.outcome]}</td>
                         <td style="color: ${call.textSent ? '#10b981' : '#6b7280'};">${call.textSent ? 'Yes' : 'No'}</td>
                         <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis;" title="${call.callbackNote}">${call.callbackNote || '-'}</td>
+                        <td>
+                            <button onclick="editCallOutcome('${call.id}')" style="background: #667eea; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-size: 0.85em; cursor: pointer; transition: all 0.2s ease;" onmouseover="this.style.background='#5568d3'" onmouseout="this.style.background='#667eea'">
+                                Edit
+                            </button>
+                        </td>
                     </tr>
                 `;
             });
