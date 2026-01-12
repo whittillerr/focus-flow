@@ -1168,7 +1168,7 @@
             if (contact.lastOutcome === 'voicemail') {
                 if (daysSince >= 7) return 90;      // Day 7+: "VM - Day 7"
                 if (daysSince >= 3) return 95;      // Day 3-6: "VM - Day 3"
-                if (daysSince >= 1) return 100;     // Day 1-2: "VM - Call Now"
+                if (daysSince >= 0) return 100;     // Day 0+: "VM - Call Now" (includes freshly logged VMs)
             }
 
             // Tier 2: Scheduled callbacks (score 80)
